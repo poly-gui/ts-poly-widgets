@@ -7,7 +7,7 @@ settings:
 dependencies:
   nanopack:
     specifier: github:poly-gui/ts-nanopack#main
-    version: github.com/poly-gui/ts-nanopack/6e54e75a815f2cd1d04f69fcef6cd797e77dd8c9(typescript@5.3.3)
+    version: github.com/poly-gui/ts-nanopack/583fa476ca9c61e9e4dcff51495d580233b6ce83(typescript@5.3.3)
   poly:
     specifier: github:poly-gui/ts-poly#main
     version: github.com/poly-gui/ts-poly/51b3c248347c1934443dc1fa3518711a07789b64(typescript@5.3.3)
@@ -1039,9 +1039,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/poly-gui/ts-nanopack/6e54e75a815f2cd1d04f69fcef6cd797e77dd8c9(typescript@5.3.3):
-    resolution: {tarball: https://codeload.github.com/poly-gui/ts-nanopack/tar.gz/6e54e75a815f2cd1d04f69fcef6cd797e77dd8c9}
-    id: github.com/poly-gui/ts-nanopack/6e54e75a815f2cd1d04f69fcef6cd797e77dd8c9
+  github.com/poly-gui/ts-nanopack/583fa476ca9c61e9e4dcff51495d580233b6ce83(typescript@5.3.3):
+    resolution: {tarball: https://codeload.github.com/poly-gui/ts-nanopack/tar.gz/583fa476ca9c61e9e4dcff51495d580233b6ce83}
+    id: github.com/poly-gui/ts-nanopack/583fa476ca9c61e9e4dcff51495d580233b6ce83
     name: nanopack
     version: 0.0.0
     prepare: true
@@ -1062,6 +1062,6 @@ packages:
     peerDependencies:
       typescript: ^5.0.0
     dependencies:
-      nanopack: github.com/poly-gui/ts-nanopack/6e54e75a815f2cd1d04f69fcef6cd797e77dd8c9(typescript@5.3.3)
+      nanopack: github.com/poly-gui/ts-nanopack/583fa476ca9c61e9e4dcff51495d580233b6ce83(typescript@5.3.3)
       typescript: 5.3.3
     dev: false

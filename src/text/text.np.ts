@@ -18,7 +18,12 @@ class Text extends Widget {
 		bytes: Uint8Array,
 	): { bytesRead: number; result: Text } | null {
 		const reader = new NanoBufReader(bytes)
+		return Text.fromReader(reader)
+	}
 
+	public static fromReader(
+		reader: NanoBufReader,
+	): { bytesRead: number; result: Text } | null {
 		let ptr = 12
 
 		let tag: number | null

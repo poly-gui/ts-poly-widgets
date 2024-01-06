@@ -3,6 +3,7 @@
 import { NanoBufReader, NanoBufWriter, type NanoPackMessage } from "nanopack"
 
 import { Widget } from "./widget/widget.np.js"
+import { makeWidget } from "./widget/make-widget.np.js"
 
 class CreateWidget implements NanoPackMessage {
 	public static TYPE_ID = 20
@@ -16,11 +17,15 @@ class CreateWidget implements NanoPackMessage {
 		bytes: Uint8Array,
 	): { bytesRead: number; result: CreateWidget } | null {
 		const reader = new NanoBufReader(bytes)
+		return CreateWidget.fromReader(reader)
+	}
 
+	public static fromReader(
+		reader: NanoBufReader,
+	): { bytesRead: number; result: CreateWidget } | null {
 		let ptr = 12
 
-		const widgetSize = reader.readFieldSize(0)
-		const maybe_widget = Widget.fromBytes(bytes.subarray(ptr))
+		const maybe_widget = makeWidget(reader.slice(ptr))
 		if (!maybe_widget) {
 			return null
 		}
