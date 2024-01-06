@@ -2,6 +2,7 @@
 
 import { NanoBufReader } from "nanopack"
 import { Widget } from "./widget.np.js"
+import { Center } from "./../center/center.np.js"
 import { Text } from "./../text/text.np.js"
 
 function makeWidget(bytes: Uint8Array) {
@@ -9,6 +10,8 @@ function makeWidget(bytes: Uint8Array) {
 	switch (reader.readTypeId()) {
 		case 100:
 			return Widget.fromReader(reader)
+		case 102:
+			return Center.fromReader(reader)
 		case 101:
 			return Text.fromReader(reader)
 		default:
