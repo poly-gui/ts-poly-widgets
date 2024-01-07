@@ -2,8 +2,8 @@
 
 import { NanoBufReader, NanoBufWriter } from "nanopack"
 
-import { makeWidget } from "../widget/make-widget.np.js"
 import { Widget } from "../widget/widget.np.js"
+import { makeWidget } from "../widget/make-widget.np.js"
 
 class Center extends Widget {
 	public static TYPE_ID = 102
