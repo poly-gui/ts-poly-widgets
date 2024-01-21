@@ -8,7 +8,7 @@ class Column extends Widget {
 	public static TYPE_ID = 103
 
 	constructor(
-		tag: number | null,
+		public tag: number | null,
 		public children: Widget[],
 	) {
 		super(tag)
@@ -27,26 +27,26 @@ class Column extends Widget {
 		let ptr = 12
 
 		let tag: number | null
-		if (reader.readFieldSize(0) < 0) {
-			tag = null
-		} else {
+		if (reader.readFieldSize(0) >= 0) {
 			tag = reader.readInt32(ptr)
 			ptr += 4
+		} else {
+			tag = null
 		}
 
 		const childrenLength = reader.readInt32(ptr)
 		ptr += 4
 		const children: Widget[] = new Array(childrenLength)
 		for (let i = 0; i < childrenLength; i++) {
-			const maybe_iItem = Widget.fromReader(reader.newReaderAt(ptr))
-			if (!maybe_iItem) {
+			const maybeIItem = Widget.fromReader(reader.newReaderAt(ptr))
+			if (!maybeIItem) {
 				return null
 			}
-			const iItem = maybe_iItem.result
-			ptr += maybe_iItem.bytesRead
-
+			const iItem = maybeIItem.result
+			ptr += maybeIItem.bytesRead
 			children[i] = iItem
 		}
+
 		return { bytesRead: ptr, result: new Column(tag, children) }
 	}
 
@@ -65,12 +65,12 @@ class Column extends Widget {
 			writer.writeFieldSize(0, -1)
 		}
 
-		let childrenByteLength = 4
 		writer.appendInt32(this.children.length)
-		for (const item0 of this.children) {
-			const item0Data = item0.bytes()
-			writer.appendBytes(item0Data)
-			childrenByteLength += item0Data.byteLength
+		let childrenByteLength = 4
+		for (const iItem of this.children) {
+			const iItemData = iItem.bytes()
+			writer.appendBytes(iItemData)
+			childrenByteLength += iItemData.byteLength
 		}
 		writer.writeFieldSize(1, childrenByteLength)
 
@@ -78,7 +78,7 @@ class Column extends Widget {
 	}
 
 	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(16, true)
+		const writer = new NanoBufWriter(12 + 4, true)
 		writer.writeTypeId(103)
 
 		if (this.tag) {
@@ -88,12 +88,12 @@ class Column extends Widget {
 			writer.writeFieldSize(0, -1)
 		}
 
-		let childrenByteLength = 4
 		writer.appendInt32(this.children.length)
-		for (const item0 of this.children) {
-			const item0Data = item0.bytes()
-			writer.appendBytes(item0Data)
-			childrenByteLength += item0Data.byteLength
+		let childrenByteLength = 4
+		for (const iItem of this.children) {
+			const iItemData = iItem.bytes()
+			writer.appendBytes(iItemData)
+			childrenByteLength += iItemData.byteLength
 		}
 		writer.writeFieldSize(1, childrenByteLength)
 

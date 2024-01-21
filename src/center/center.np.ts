@@ -3,13 +3,12 @@
 import { NanoBufReader, NanoBufWriter } from "nanopack"
 
 import { Widget } from "../widget/widget.np.js"
-import { makeWidget } from "../widget/make-widget.np.js"
 
 class Center extends Widget {
 	public static TYPE_ID = 102
 
 	constructor(
-		tag: number | null,
+		public tag: number | null,
 		public child: Widget,
 	) {
 		super(tag)
@@ -28,19 +27,19 @@ class Center extends Widget {
 		let ptr = 12
 
 		let tag: number | null
-		if (reader.readFieldSize(0) < 0) {
-			tag = null
-		} else {
+		if (reader.readFieldSize(0) >= 0) {
 			tag = reader.readInt32(ptr)
 			ptr += 4
+		} else {
+			tag = null
 		}
 
-		const maybe_child = makeWidget(reader.slice(ptr))
-		if (!maybe_child) {
+		const maybeChild = Widget.fromReader(reader.newReaderAt(ptr))
+		if (!maybeChild) {
 			return null
 		}
-		const child = maybe_child.result
-		ptr += maybe_child.bytesRead
+		const child = maybeChild.result
+		ptr += maybeChild.bytesRead
 
 		return { bytesRead: ptr, result: new Center(tag, child) }
 	}
@@ -68,7 +67,7 @@ class Center extends Widget {
 	}
 
 	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(16, true)
+		const writer = new NanoBufWriter(12 + 4, true)
 		writer.writeTypeId(102)
 
 		if (this.tag) {

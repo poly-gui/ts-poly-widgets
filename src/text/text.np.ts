@@ -8,7 +8,7 @@ class Text extends Widget {
 	public static TYPE_ID = 101
 
 	constructor(
-		tag: number | null,
+		public tag: number | null,
 		public content: string,
 	) {
 		super(tag)
@@ -27,11 +27,11 @@ class Text extends Widget {
 		let ptr = 12
 
 		let tag: number | null
-		if (reader.readFieldSize(0) < 0) {
-			tag = null
-		} else {
+		if (reader.readFieldSize(0) >= 0) {
 			tag = reader.readInt32(ptr)
 			ptr += 4
+		} else {
+			tag = null
 		}
 
 		const contentByteLength = reader.readFieldSize(1)
@@ -63,7 +63,7 @@ class Text extends Widget {
 	}
 
 	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(16, true)
+		const writer = new NanoBufWriter(12 + 4, true)
 		writer.writeTypeId(101)
 
 		if (this.tag) {

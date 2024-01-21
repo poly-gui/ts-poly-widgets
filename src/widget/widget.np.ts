@@ -20,11 +20,11 @@ class Widget implements NanoPackMessage {
 		let ptr = 8
 
 		let tag: number | null
-		if (reader.readFieldSize(0) < 0) {
-			tag = null
-		} else {
+		if (reader.readFieldSize(0) >= 0) {
 			tag = reader.readInt32(ptr)
 			ptr += 4
+		} else {
+			tag = null
 		}
 
 		return { bytesRead: ptr, result: new Widget(tag) }
@@ -49,7 +49,7 @@ class Widget implements NanoPackMessage {
 	}
 
 	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12, true)
+		const writer = new NanoBufWriter(8 + 4, true)
 		writer.writeTypeId(100)
 
 		if (this.tag) {

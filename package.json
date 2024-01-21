@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "nanoc": "nanoc --language=ts $(find . -name \"*.yml\")",
+    "nanoc": "nanoc --language=ts $(find src -name \"*.yml\")",
     "prepare": "tsc -p tsconfig.build.json"
   },
   "keywords": [],
