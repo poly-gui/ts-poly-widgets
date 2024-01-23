@@ -7,6 +7,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./layout": {
+      "import": "./dist/layout.js",
+      "types": "./dist/layout.d.ts"
     }
   },
   "scripts": {

@@ -1,3 +1,7 @@
 Column::Widget:
   typeid: 103
-  children: Widget[]:0
+  width: double:0
+  height: double:1
+  horizontalAlignment: Alignment:2
+  verticalAlignment: Alignment:3
+  children: Widget[]:4

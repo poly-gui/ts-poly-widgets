@@ -3,12 +3,17 @@
 import { NanoBufReader, NanoBufWriter } from "nanopack"
 
 import { Widget } from "../widget/widget.np.js"
+import type { TAlignment } from "../alignment/alignment.np.js"
 
 class Column extends Widget {
 	public static TYPE_ID = 103
 
 	constructor(
 		public tag: number | null,
+		public width: number,
+		public height: number,
+		public horizontalAlignment: TAlignment,
+		public verticalAlignment: TAlignment,
 		public children: Widget[],
 	) {
 		super(tag)
@@ -24,7 +29,7 @@ class Column extends Widget {
 	public static fromReader(
 		reader: NanoBufReader,
 	): { bytesRead: number; result: Column } | null {
-		let ptr = 12
+		let ptr = 28
 
 		let tag: number | null
 		if (reader.readFieldSize(0) >= 0) {
@@ -33,6 +38,18 @@ class Column extends Widget {
 		} else {
 			tag = null
 		}
+
+		const width = reader.readDouble(ptr)
+		ptr += 8
+
+		const height = reader.readDouble(ptr)
+		ptr += 8
+
+		const horizontalAlignment = reader.readInt8(ptr) as TAlignment
+		ptr += 1
+
+		const verticalAlignment = reader.readInt8(ptr) as TAlignment
+		ptr += 1
 
 		const childrenLength = reader.readInt32(ptr)
 		ptr += 4
@@ -47,7 +64,17 @@ class Column extends Widget {
 			children[i] = iItem
 		}
 
-		return { bytesRead: ptr, result: new Column(tag, children) }
+		return {
+			bytesRead: ptr,
+			result: new Column(
+				tag,
+				width,
+				height,
+				horizontalAlignment,
+				verticalAlignment,
+				children,
+			),
+		}
 	}
 
 	public override get typeId(): number {
@@ -55,7 +82,7 @@ class Column extends Widget {
 	}
 
 	public override bytes(): Uint8Array {
-		const writer = new NanoBufWriter(12)
+		const writer = new NanoBufWriter(28)
 		writer.writeTypeId(103)
 
 		if (this.tag) {
@@ -65,6 +92,18 @@ class Column extends Widget {
 			writer.writeFieldSize(0, -1)
 		}
 
+		writer.appendDouble(this.width)
+		writer.writeFieldSize(1, 8)
+
+		writer.appendDouble(this.height)
+		writer.writeFieldSize(2, 8)
+
+		writer.appendInt8(this.horizontalAlignment)
+		writer.writeFieldSize(3, 1)
+
+		writer.appendInt8(this.verticalAlignment)
+		writer.writeFieldSize(4, 1)
+
 		writer.appendInt32(this.children.length)
 		let childrenByteLength = 4
 		for (const iItem of this.children) {
@@ -72,13 +111,13 @@ class Column extends Widget {
 			writer.appendBytes(iItemData)
 			childrenByteLength += iItemData.byteLength
 		}
-		writer.writeFieldSize(1, childrenByteLength)
+		writer.writeFieldSize(5, childrenByteLength)
 
 		return writer.bytes
 	}
 
 	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12 + 4, true)
+		const writer = new NanoBufWriter(28 + 4, true)
 		writer.writeTypeId(103)
 
 		if (this.tag) {
@@ -88,6 +127,18 @@ class Column extends Widget {
 			writer.writeFieldSize(0, -1)
 		}
 
+		writer.appendDouble(this.width)
+		writer.writeFieldSize(1, 8)
+
+		writer.appendDouble(this.height)
+		writer.writeFieldSize(2, 8)
+
+		writer.appendInt8(this.horizontalAlignment)
+		writer.writeFieldSize(3, 1)
+
+		writer.appendInt8(this.verticalAlignment)
+		writer.writeFieldSize(4, 1)
+
 		writer.appendInt32(this.children.length)
 		let childrenByteLength = 4
 		for (const iItem of this.children) {
@@ -95,7 +146,7 @@ class Column extends Widget {
 			writer.appendBytes(iItemData)
 			childrenByteLength += iItemData.byteLength
 		}
-		writer.writeFieldSize(1, childrenByteLength)
+		writer.writeFieldSize(5, childrenByteLength)
 
 		writer.writeLengthPrefix(writer.currentSize - 4)
 
