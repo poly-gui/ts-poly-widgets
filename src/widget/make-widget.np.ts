@@ -3,21 +3,24 @@
 import { NanoBufReader } from "nanopack"
 
 import { Widget } from "./widget.np.js"
+import { Button } from "../button/button.np.js"
+import { Center } from "../center/center.np.js"
 import { Text } from "../text/text.np.js"
 import { Column } from "../column/column.np.js"
-import { Center } from "../center/center.np.js"
 
 function makeWidget(bytes: Uint8Array) {
 	const reader = new NanoBufReader(bytes)
 	switch (reader.readTypeId()) {
 		case 100:
 			return Widget.fromReader(reader)
+		case 104:
+			return Button.fromReader(reader)
+		case 102:
+			return Center.fromReader(reader)
 		case 101:
 			return Text.fromReader(reader)
 		case 103:
 			return Column.fromReader(reader)
-		case 102:
-			return Center.fromReader(reader)
 		default:
 			return null
 	}
