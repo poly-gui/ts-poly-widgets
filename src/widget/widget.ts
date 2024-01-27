@@ -1,5 +1,12 @@
+type WidgetTag = number
+
 interface WidgetProps {
-	tag?: number
+	tag?: WidgetTag
 }
 
-export type { WidgetProps }
+interface CreatedWidget {
+	tag: WidgetTag
+}
+
+export type { Widget } from "./widget.np.js"
+export type { WidgetProps, CreatedWidget, WidgetTag }

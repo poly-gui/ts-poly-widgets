@@ -1,9 +1,8 @@
 import type { ApplicationContext } from "poly/application"
 import { ClickEvent } from "./click-event.np.js"
 import { Button } from "./button.np.js"
-import type { WidgetProps } from "../widget/widget.js"
-import { CreatedWidget } from "../widget.js"
-import { WidgetRegistry } from "../widget-registry.js"
+import type { CreatedWidget, WidgetProps } from "../widget/widget.js"
+import { WidgetRegistry } from "../widget/widget-registry.js"
 
 interface ButtonProps extends WidgetProps {
 	context: ApplicationContext
