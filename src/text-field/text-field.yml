@@ -1,0 +1,5 @@
+TextField::Widget:
+  typeid: 105
+  placeholder: string?
+  value: string
+  onValueChanged: int32

@@ -1,4 +1,4 @@
 CreateWidget:
   typeid: 20
-  widget: Widget:0
-  windowTag: string:1
+  widget: Widget
+  windowTag: string

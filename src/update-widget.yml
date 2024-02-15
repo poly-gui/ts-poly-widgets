@@ -1,4 +1,4 @@
 UpdateWidget:
   typeid: 3
-  tag: int32:0
-  widget: Widget:1
+  tag: int32
+  widget: Widget
