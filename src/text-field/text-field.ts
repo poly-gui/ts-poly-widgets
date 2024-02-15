@@ -33,16 +33,19 @@ function textField({
 		createdTextField = {
 			tag,
 			onValueChanged,
-			onValueChangedHandle: -1,
+			onValueChangedHandle: context.callbackRegistry.newCallback(
+				(argReader) => {
+					const event = OnValueChanged.fromReader(argReader)
+					if (event) {
+						createdTextField.onValueChanged(event.result)
+					}
+				},
+				`${tag}`,
+			),
 		}
-		createdTextField.onValueChangedHandle =
-			context.callbackRegistry.newCallback((argBytes) => {
-				const event = OnValueChanged.fromReader(argBytes)
-				if (event) {
-					createdTextField.onValueChanged(event.result)
-				}
-			}, `${tag}`)
 		widgetRegistry.register(createdTextField)
+	} else {
+		createdTextField.onValueChanged = onValueChanged
 	}
 
 	return new TextField(

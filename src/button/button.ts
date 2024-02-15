@@ -4,12 +4,15 @@ import { Button } from "./button.np.js"
 import type { CreatedWidget, WidgetProps } from "../widget/widget.js"
 import { WidgetRegistry } from "../widget/widget-registry.js"
 
+type ButtonOnClickCallback = (event: ClickEvent) => void
+
 interface ButtonProps extends WidgetProps {
 	context: ApplicationContext
-	onClick: (event: ClickEvent) => void
+	onClick: ButtonOnClickCallback
 }
 
 interface CreatedButton extends CreatedWidget {
+	onClick: ButtonOnClickCallback
 	onClickHandle: number
 }
 
@@ -19,20 +22,25 @@ function button(
 ) {
 	const widgetRegistry = WidgetRegistry.fromContext(context)
 	let createdButton = widgetRegistry.findWidget(tag) as CreatedButton
-	let onClickHandle: number
 
 	if (!createdButton) {
-		onClickHandle = context.callbackRegistry.newCallback((argBytes) => {
-			const event = ClickEvent.fromReader(argBytes)
-			if (event) {
-				onClick(event.result)
-			}
-		}, `${tag}`)
-		createdButton = { tag, onClickHandle }
+		createdButton = {
+			tag,
+			onClick,
+			onClickHandle: context.callbackRegistry.newCallback((argReader) => {
+				const event = ClickEvent.fromReader(argReader)
+				if (event) {
+					createdButton.onClick(event.result)
+				}
+			}, `${tag}`),
+		}
 		widgetRegistry.register(createdButton)
+	} else {
+		createdButton.onClick = onClick
 	}
 
 	return new Button(createdButton.tag, text, createdButton.onClickHandle)
 }
 
 export { button }
+export type { ClickEvent, ButtonOnClickCallback }
