@@ -1,0 +1,7 @@
+Row::Widget:
+  typeid: 106
+  width: double
+  height: double
+  horizontalAlignment: Alignment
+  verticalAlignment: Alignment
+  children: Widget[]
