@@ -1,5 +1,6 @@
 export type { WidgetTag, WidgetProps, Widget } from "./widget/widget.js"
 export * from "./alignment/alignment.np.js"
+export * from "./layout.js"
 export * from "./create-widget.js"
 export * from "./update-widget.js"
 export * from "./text/text.js"
