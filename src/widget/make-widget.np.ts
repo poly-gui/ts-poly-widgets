@@ -4,10 +4,11 @@ import { NanoBufReader } from "nanopack"
 
 import { Widget } from "./widget.np.js"
 import { Text } from "../text/text.np.js"
-import { Row } from "../row/row.np.js"
-import { TextField } from "../text-field/text-field.np.js"
 import { Button } from "../button/button.np.js"
+import { Row } from "../row/row.np.js"
 import { Column } from "../column/column.np.js"
+import { TextField } from "../text-field/text-field.np.js"
+import { ListView } from "../list-view/list-view.np.js"
 import { Center } from "../center/center.np.js"
 
 function makeWidget(bytes: Uint8Array) {
@@ -17,14 +18,16 @@ function makeWidget(bytes: Uint8Array) {
 			return Widget.fromReader(reader)
 		case 101:
 			return Text.fromReader(reader)
-		case 106:
-			return Row.fromReader(reader)
-		case 105:
-			return TextField.fromReader(reader)
 		case 104:
 			return Button.fromReader(reader)
+		case 106:
+			return Row.fromReader(reader)
 		case 103:
 			return Column.fromReader(reader)
+		case 105:
+			return TextField.fromReader(reader)
+		case 107:
+			return ListView.fromReader(reader)
 		case 102:
 			return Center.fromReader(reader)
 		default:

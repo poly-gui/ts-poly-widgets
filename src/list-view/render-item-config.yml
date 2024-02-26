@@ -1,0 +1,4 @@
+RenderItemConfig:
+  typeid: 1070
+  sectionIndex: int32
+  itemIndex: int32
