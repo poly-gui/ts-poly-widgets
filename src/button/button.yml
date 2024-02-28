@@ -1,4 +1,3 @@
 Button::Widget:
-  typeid: 104
   text: string:0
   onClick: int32

@@ -5,7 +5,7 @@ import { NanoBufReader, NanoBufWriter } from "nanopack"
 import { Widget } from "../widget/widget.np.js"
 
 class ListView extends Widget {
-	public static TYPE_ID = 107
+	public static TYPE_ID = 2164488861
 
 	constructor(
 		public tag: number | null,
@@ -62,12 +62,12 @@ class ListView extends Widget {
 	}
 
 	public override get typeId(): number {
-		return 107
+		return 2164488861
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(24)
-		writer.writeTypeId(107)
+		writer.writeTypeId(2164488861)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)
@@ -95,7 +95,7 @@ class ListView extends Widget {
 
 	public override bytesWithLengthPrefix(): Uint8Array {
 		const writer = new NanoBufWriter(24 + 4, true)
-		writer.writeTypeId(107)
+		writer.writeTypeId(2164488861)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)

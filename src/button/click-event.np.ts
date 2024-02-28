@@ -3,7 +3,7 @@
 import { NanoBufReader, NanoBufWriter, type NanoPackMessage } from "nanopack"
 
 class ClickEvent implements NanoPackMessage {
-	public static TYPE_ID = 1041
+	public static TYPE_ID = 837166865
 
 	constructor(public timestamp: number) {}
 
@@ -26,12 +26,12 @@ class ClickEvent implements NanoPackMessage {
 	}
 
 	public get typeId(): number {
-		return 1041
+		return 837166865
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(8)
-		writer.writeTypeId(1041)
+		writer.writeTypeId(837166865)
 
 		writer.appendInt32(this.timestamp)
 		writer.writeFieldSize(0, 4)
@@ -41,7 +41,7 @@ class ClickEvent implements NanoPackMessage {
 
 	public bytesWithLengthPrefix(): Uint8Array {
 		const writer = new NanoBufWriter(8 + 4, true)
-		writer.writeTypeId(1041)
+		writer.writeTypeId(837166865)
 
 		writer.appendInt32(this.timestamp)
 		writer.writeFieldSize(0, 4)

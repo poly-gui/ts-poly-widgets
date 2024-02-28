@@ -1,5 +1,4 @@
 Column::Widget:
-  typeid: 103
   width: double
   height: double
   horizontalAlignment: Alignment

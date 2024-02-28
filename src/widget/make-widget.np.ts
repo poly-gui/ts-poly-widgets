@@ -3,33 +3,33 @@
 import { NanoBufReader } from "nanopack"
 
 import { Widget } from "./widget.np.js"
-import { Text } from "../text/text.np.js"
 import { Button } from "../button/button.np.js"
-import { Row } from "../row/row.np.js"
-import { Column } from "../column/column.np.js"
 import { TextField } from "../text-field/text-field.np.js"
-import { ListView } from "../list-view/list-view.np.js"
+import { Row } from "../row/row.np.js"
 import { Center } from "../center/center.np.js"
+import { ListView } from "../list-view/list-view.np.js"
+import { Column } from "../column/column.np.js"
+import { Text } from "../text/text.np.js"
 
 function makeWidget(bytes: Uint8Array) {
 	const reader = new NanoBufReader(bytes)
 	switch (reader.readTypeId()) {
-		case 100:
+		case 1676374721:
 			return Widget.fromReader(reader)
-		case 101:
-			return Text.fromReader(reader)
-		case 104:
+		case 320412644:
 			return Button.fromReader(reader)
-		case 106:
-			return Row.fromReader(reader)
-		case 103:
-			return Column.fromReader(reader)
-		case 105:
+		case 841129444:
 			return TextField.fromReader(reader)
-		case 107:
-			return ListView.fromReader(reader)
-		case 102:
+		case 1006836449:
+			return Row.fromReader(reader)
+		case 1855640887:
 			return Center.fromReader(reader)
+		case 2164488861:
+			return ListView.fromReader(reader)
+		case 2415007766:
+			return Column.fromReader(reader)
+		case 3495336243:
+			return Text.fromReader(reader)
 		default:
 			return null
 	}

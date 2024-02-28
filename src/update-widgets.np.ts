@@ -5,7 +5,7 @@ import { NanoBufReader, NanoBufWriter, type NanoPackMessage } from "nanopack"
 import { UpdateWidget } from "./update-widget.np.js"
 
 class UpdateWidgets implements NanoPackMessage {
-	public static TYPE_ID = 4
+	public static TYPE_ID = 624966581
 
 	constructor(public updates: UpdateWidget[]) {}
 
@@ -38,12 +38,12 @@ class UpdateWidgets implements NanoPackMessage {
 	}
 
 	public get typeId(): number {
-		return 4
+		return 624966581
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(8)
-		writer.writeTypeId(4)
+		writer.writeTypeId(624966581)
 
 		writer.appendInt32(this.updates.length)
 		let updatesByteLength = 4
@@ -59,7 +59,7 @@ class UpdateWidgets implements NanoPackMessage {
 
 	public bytesWithLengthPrefix(): Uint8Array {
 		const writer = new NanoBufWriter(8 + 4, true)
-		writer.writeTypeId(4)
+		writer.writeTypeId(624966581)
 
 		writer.appendInt32(this.updates.length)
 		let updatesByteLength = 4

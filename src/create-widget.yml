@@ -1,4 +1,3 @@
 CreateWidget:
-  typeid: 20
   widget: Widget
   windowTag: string

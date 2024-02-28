@@ -6,7 +6,7 @@ import { Widget } from "../widget/widget.np.js"
 import type { TAlignment } from "../alignment/alignment.np.js"
 
 class Row extends Widget {
-	public static TYPE_ID = 106
+	public static TYPE_ID = 1006836449
 
 	constructor(
 		public tag: number | null,
@@ -78,12 +78,12 @@ class Row extends Widget {
 	}
 
 	public override get typeId(): number {
-		return 106
+		return 1006836449
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(28)
-		writer.writeTypeId(106)
+		writer.writeTypeId(1006836449)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)
@@ -118,7 +118,7 @@ class Row extends Widget {
 
 	public override bytesWithLengthPrefix(): Uint8Array {
 		const writer = new NanoBufWriter(28 + 4, true)
-		writer.writeTypeId(106)
+		writer.writeTypeId(1006836449)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)

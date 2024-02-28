@@ -3,7 +3,7 @@
 import { NanoBufReader, NanoBufWriter, type NanoPackMessage } from "nanopack"
 
 class RenderItemConfig implements NanoPackMessage {
-	public static TYPE_ID = 1070
+	public static TYPE_ID = 3591753548
 
 	constructor(
 		public sectionIndex: number,
@@ -35,12 +35,12 @@ class RenderItemConfig implements NanoPackMessage {
 	}
 
 	public get typeId(): number {
-		return 1070
+		return 3591753548
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(12)
-		writer.writeTypeId(1070)
+		writer.writeTypeId(3591753548)
 
 		writer.appendInt32(this.sectionIndex)
 		writer.writeFieldSize(0, 4)
@@ -53,7 +53,7 @@ class RenderItemConfig implements NanoPackMessage {
 
 	public bytesWithLengthPrefix(): Uint8Array {
 		const writer = new NanoBufWriter(12 + 4, true)
-		writer.writeTypeId(1070)
+		writer.writeTypeId(3591753548)
 
 		writer.appendInt32(this.sectionIndex)
 		writer.writeFieldSize(0, 4)

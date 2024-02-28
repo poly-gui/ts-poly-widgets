@@ -1,5 +1,4 @@
 ListView::Widget:
-  typeid: 107
   width: double
   height: double
   sectionCounts: int32[]
