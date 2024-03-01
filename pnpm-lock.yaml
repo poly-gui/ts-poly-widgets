@@ -7,10 +7,10 @@ settings:
 dependencies:
   nanopack:
     specifier: github:poly-gui/ts-nanopack#main
-    version: github.com/poly-gui/ts-nanopack/044db8d6e77bffb629187418b60585858a74261d(typescript@5.3.3)
+    version: github.com/poly-gui/ts-nanopack/94bf3e105a462443a821f21a1b7ede11b195224b(typescript@5.3.3)
   poly:
     specifier: github:poly-gui/ts-poly#main
-    version: github.com/poly-gui/ts-poly/d2aacfd954f63210c01675f9f4ce92fe85c799e4(typescript@5.3.3)
+    version: github.com/poly-gui/ts-poly/c3c7e2017ee030c60e71df00a65bb43ac4ff958f(typescript@5.3.3)
 
 devDependencies:
   '@typescript-eslint/eslint-plugin':
@@ -1039,9 +1039,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/poly-gui/ts-nanopack/044db8d6e77bffb629187418b60585858a74261d(typescript@5.3.3):
-    resolution: {tarball: https://codeload.github.com/poly-gui/ts-nanopack/tar.gz/044db8d6e77bffb629187418b60585858a74261d}
-    id: github.com/poly-gui/ts-nanopack/044db8d6e77bffb629187418b60585858a74261d
+  github.com/poly-gui/ts-nanopack/94bf3e105a462443a821f21a1b7ede11b195224b(typescript@5.3.3):
+    resolution: {tarball: https://codeload.github.com/poly-gui/ts-nanopack/tar.gz/94bf3e105a462443a821f21a1b7ede11b195224b}
+    id: github.com/poly-gui/ts-nanopack/94bf3e105a462443a821f21a1b7ede11b195224b
     name: nanopack
     version: 0.0.0
     requiresBuild: true
@@ -1051,15 +1051,15 @@ packages:
       typescript: 5.3.3
     dev: false
 
-  github.com/poly-gui/ts-poly/d2aacfd954f63210c01675f9f4ce92fe85c799e4(typescript@5.3.3):
-    resolution: {tarball: https://codeload.github.com/poly-gui/ts-poly/tar.gz/d2aacfd954f63210c01675f9f4ce92fe85c799e4}
-    id: github.com/poly-gui/ts-poly/d2aacfd954f63210c01675f9f4ce92fe85c799e4
+  github.com/poly-gui/ts-poly/c3c7e2017ee030c60e71df00a65bb43ac4ff958f(typescript@5.3.3):
+    resolution: {tarball: https://codeload.github.com/poly-gui/ts-poly/tar.gz/c3c7e2017ee030c60e71df00a65bb43ac4ff958f}
+    id: github.com/poly-gui/ts-poly/c3c7e2017ee030c60e71df00a65bb43ac4ff958f
     name: poly
     version: 0.0.0
     requiresBuild: true
     peerDependencies:
       typescript: ^5.0.0
     dependencies:
-      nanopack: github.com/poly-gui/ts-nanopack/044db8d6e77bffb629187418b60585858a74261d(typescript@5.3.3)
+      nanopack: github.com/poly-gui/ts-nanopack/94bf3e105a462443a821f21a1b7ede11b195224b(typescript@5.3.3)
       typescript: 5.3.3
     dev: false

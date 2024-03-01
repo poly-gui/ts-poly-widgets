@@ -8,6 +8,7 @@ class RenderItemConfig implements NanoPackMessage {
 	constructor(
 		public sectionIndex: number,
 		public itemIndex: number,
+		public itemTag: number | null,
 	) {}
 
 	public static fromBytes(
@@ -20,7 +21,7 @@ class RenderItemConfig implements NanoPackMessage {
 	public static fromReader(
 		reader: NanoBufReader,
 	): { bytesRead: number; result: RenderItemConfig } | null {
-		let ptr = 12
+		let ptr = 16
 
 		const sectionIndex = reader.readInt32(ptr)
 		ptr += 4
@@ -28,9 +29,17 @@ class RenderItemConfig implements NanoPackMessage {
 		const itemIndex = reader.readInt32(ptr)
 		ptr += 4
 
+		let itemTag: number | null
+		if (reader.readFieldSize(2) >= 0) {
+			itemTag = reader.readInt32(ptr)
+			ptr += 4
+		} else {
+			itemTag = null
+		}
+
 		return {
 			bytesRead: ptr,
-			result: new RenderItemConfig(sectionIndex, itemIndex),
+			result: new RenderItemConfig(sectionIndex, itemIndex, itemTag),
 		}
 	}
 
@@ -39,7 +48,7 @@ class RenderItemConfig implements NanoPackMessage {
 	}
 
 	public bytes(): Uint8Array {
-		const writer = new NanoBufWriter(12)
+		const writer = new NanoBufWriter(16)
 		writer.writeTypeId(3591753548)
 
 		writer.appendInt32(this.sectionIndex)
@@ -47,12 +56,19 @@ class RenderItemConfig implements NanoPackMessage {
 
 		writer.appendInt32(this.itemIndex)
 		writer.writeFieldSize(1, 4)
+
+		if (this.itemTag) {
+			writer.appendInt32(this.itemTag)
+			writer.writeFieldSize(2, 4)
+		} else {
+			writer.writeFieldSize(2, -1)
+		}
 
 		return writer.bytes
 	}
 
 	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12 + 4, true)
+		const writer = new NanoBufWriter(16 + 4, true)
 		writer.writeTypeId(3591753548)
 
 		writer.appendInt32(this.sectionIndex)
@@ -60,6 +76,13 @@ class RenderItemConfig implements NanoPackMessage {
 
 		writer.appendInt32(this.itemIndex)
 		writer.writeFieldSize(1, 4)
+
+		if (this.itemTag) {
+			writer.appendInt32(this.itemTag)
+			writer.writeFieldSize(2, 4)
+		} else {
+			writer.writeFieldSize(2, -1)
+		}
 
 		writer.writeLengthPrefix(writer.currentSize - 4)
 

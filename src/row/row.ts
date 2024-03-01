@@ -1,33 +1,36 @@
-import type { Widget } from "../widget/widget.np.js"
-import { Alignment, type TAlignment } from "../alignment/alignment.np.js"
-import { Row } from "./row.np.js"
+import { Widget } from "../widget/widget.np.js"
+import { Alignment } from "../alignment/alignment.np.js"
+import { Row as NpRow } from "./row.np.js"
 import { MIN_CONTENT } from "../layout.js"
+import { PolyWidget } from "../widget/widget.js"
+import { ApplicationContext } from "poly/application"
 
-interface RowProps {
-	width?: number
-	height?: number
-	horizontalAlignment?: TAlignment
-	verticalAlignment?: TAlignment
+class Row extends PolyWidget {
+	public width = MIN_CONTENT
+	public height = MIN_CONTENT
+	public horizontalAlignment = Alignment.START
+	public verticalAlignment = Alignment.CENTER
+
+	private children: PolyWidget[] = []
+
+	constructor(context: ApplicationContext) {
+		super(context)
+	}
+
+	public addChildren(...children: PolyWidget[]) {
+		this.children.push(...children)
+	}
+
+	override descriptor(): Widget {
+		return new NpRow(
+			this.tag,
+			this.width,
+			this.height,
+			this.horizontalAlignment,
+			this.verticalAlignment,
+			this.children.map((child) => child.descriptor()),
+		)
+	}
 }
 
-function row(
-	children: Widget[],
-	{
-		width = MIN_CONTENT,
-		height = MIN_CONTENT,
-		horizontalAlignment = Alignment.START,
-		verticalAlignment = Alignment.CENTER,
-	}: RowProps,
-) {
-	return new Row(
-		null,
-		width,
-		height,
-		horizontalAlignment,
-		verticalAlignment,
-		children,
-	)
-}
-
-export { row }
-export type { RowProps }
+export { Row }

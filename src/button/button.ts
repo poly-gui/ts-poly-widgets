@@ -1,46 +1,35 @@
 import type { ApplicationContext } from "poly/application"
 import { ClickEvent } from "./click-event.np.js"
-import { Button } from "./button.np.js"
-import type { CreatedWidget, WidgetProps } from "../widget/widget.js"
-import { WidgetRegistry } from "../widget/widget-registry.js"
+import { Button as NpButton } from "./button.np.js"
+import { PolyWidget, Widget } from "../widget/widget.js"
+import { NanoBufReader } from "nanopack"
 
 type ButtonOnClickCallback = (event: ClickEvent) => void
 
-interface ButtonProps extends WidgetProps {
-	context: ApplicationContext
-	onClick: ButtonOnClickCallback
-}
+class Button extends PolyWidget {
+	public label = ""
+	public onClick: ButtonOnClickCallback | null = null
 
-interface CreatedButton extends CreatedWidget {
-	onClick: ButtonOnClickCallback
-	onClickHandle: number
-}
+	private readonly onClickHandle: number
 
-function button(
-	text: string,
-	{ context, onClick, tag = context.idRegistry.newId("button") }: ButtonProps,
-) {
-	const widgetRegistry = WidgetRegistry.fromContext(context)
-	let createdButton = widgetRegistry.findWidget(tag) as CreatedButton
-
-	if (!createdButton) {
-		createdButton = {
-			tag,
-			onClick,
-			onClickHandle: context.callbackRegistry.newCallback((argReader) => {
-				const event = ClickEvent.fromReader(argReader)
-				if (event) {
-					createdButton.onClick(event.result)
-				}
-			}, `${tag}`),
-		}
-		widgetRegistry.register(createdButton)
-	} else {
-		createdButton.onClick = onClick
+	constructor(context: ApplicationContext) {
+		super(context)
+		this.onClickHandle = context.callbackRegistry.newCallback(
+			this.onClickEvent.bind(this),
+		)
 	}
 
-	return new Button(createdButton.tag, text, createdButton.onClickHandle)
+	public descriptor(): Widget {
+		return new NpButton(this.tag, this.label, this.onClickHandle)
+	}
+
+	private onClickEvent(argReader: NanoBufReader) {
+		const event = ClickEvent.fromReader(argReader)
+		if (event) {
+			this.onClick?.(event.result)
+		}
+	}
 }
 
-export { button }
+export { Button }
 export type { ClickEvent, ButtonOnClickCallback }

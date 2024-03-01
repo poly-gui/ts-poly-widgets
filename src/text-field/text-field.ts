@@ -1,60 +1,43 @@
 import type { ApplicationContext } from "poly/application"
+import { NanoBufReader } from "nanopack"
 
-import { CreatedWidget, type WidgetProps } from "../widget/widget.js"
+import { PolyWidget, type Widget } from "../widget/widget.js"
+import { TextField as NpTextField } from "./text-field.np.js"
 import { OnValueChanged } from "./on-value-changed.np.js"
-import { WidgetRegistry } from "../widget/widget-registry.js"
-import { TextField } from "./text-field.np.js"
 
 type OnValueChangedCallback = (event: OnValueChanged) => void
 
-interface TextFieldProps extends WidgetProps {
-	context: ApplicationContext
-	placeholder: string | null
-	value: string
-	onValueChanged: OnValueChangedCallback
-}
+class TextField extends PolyWidget {
+	public placeholder = ""
+	public value = ""
+	public onValueChanged: OnValueChangedCallback | null = null
 
-interface CreatedTextField extends CreatedWidget {
-	onValueChanged: OnValueChangedCallback
-	onValueChangedHandle: number
-}
+	private readonly _onValueChangedHandle: number
 
-function textField({
-	context,
-	placeholder = null,
-	value,
-	onValueChanged,
-	tag = context.idRegistry.newId("textField"),
-}: TextFieldProps) {
-	const widgetRegistry = WidgetRegistry.fromContext(context)
-	let createdTextField = widgetRegistry.findWidget(tag) as CreatedTextField
+	constructor(context: ApplicationContext) {
+		super(context)
 
-	if (!createdTextField) {
-		createdTextField = {
-			tag,
-			onValueChanged,
-			onValueChangedHandle: context.callbackRegistry.newCallback(
-				(argReader) => {
-					const event = OnValueChanged.fromReader(argReader)
-					if (event) {
-						createdTextField.onValueChanged(event.result)
-					}
-				},
-				`${tag}`,
-			),
-		}
-		widgetRegistry.register(createdTextField)
-	} else {
-		createdTextField.onValueChanged = onValueChanged
+		this._onValueChangedHandle = this.context.callbackRegistry.newCallback(
+			this.onValueChangedEvent.bind(this),
+		)
 	}
 
-	return new TextField(
-		tag,
-		placeholder,
-		value,
-		createdTextField.onValueChangedHandle,
-	)
+	override descriptor(): Widget {
+		return new NpTextField(
+			this.tag,
+			this.placeholder,
+			this.value,
+			this._onValueChangedHandle,
+		)
+	}
+
+	private onValueChangedEvent(argReader: NanoBufReader) {
+		const event = OnValueChanged.fromReader(argReader)
+		if (event) {
+			this.onValueChanged?.(event.result)
+		}
+	}
 }
 
-export { textField }
+export { TextField }
 export type { OnValueChanged }

@@ -1,10 +1,18 @@
-import { Text } from "./text.np.js"
-import { WidgetProps } from "../widget/widget.js"
+import type { ApplicationContext } from "poly/application"
 
-interface TextProps extends WidgetProps {}
+import { Text as NpText } from "./text.np.js"
+import { PolyWidget, type Widget } from "../widget/widget.js"
 
-function text(content: string, { tag }: TextProps): Text {
-	return new Text(tag ?? null, content)
+class Text extends PolyWidget {
+	public content = ""
+
+	constructor(context: ApplicationContext) {
+		super(context)
+	}
+
+	override descriptor(): Widget {
+		return new NpText(this.tag, this.content)
+	}
 }
 
-export { text }
+export { Text }

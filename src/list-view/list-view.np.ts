@@ -11,8 +11,10 @@ class ListView extends Widget {
 		public tag: number | null,
 		public width: number,
 		public height: number,
-		public sectionCounts: number[],
-		public renderItem: number,
+		public sections: number[],
+		public itemHeight: number,
+		public onCreate: number,
+		public onBind: number,
 	) {
 		super(tag)
 	}
@@ -27,7 +29,7 @@ class ListView extends Widget {
 	public static fromReader(
 		reader: NanoBufReader,
 	): { bytesRead: number; result: ListView } | null {
-		let ptr = 24
+		let ptr = 32
 
 		let tag: number | null
 		if (reader.readFieldSize(0) >= 0) {
@@ -43,21 +45,35 @@ class ListView extends Widget {
 		const height = reader.readDouble(ptr)
 		ptr += 8
 
-		const sectionCountsByteLength = reader.readFieldSize(3)
-		const sectionCountsLength = sectionCountsByteLength / 4
-		const sectionCounts: number[] = new Array(sectionCountsLength)
-		for (let i = 0; i < sectionCountsLength; i++) {
+		const sectionsByteLength = reader.readFieldSize(3)
+		const sectionsLength = sectionsByteLength / 4
+		const sections: number[] = new Array(sectionsLength)
+		for (let i = 0; i < sectionsLength; i++) {
 			const iItem = reader.readInt32(ptr)
 			ptr += 4
-			sectionCounts[i] = iItem
+			sections[i] = iItem
 		}
 
-		const renderItem = reader.readInt32(ptr)
+		const itemHeight = reader.readDouble(ptr)
+		ptr += 8
+
+		const onCreate = reader.readInt32(ptr)
+		ptr += 4
+
+		const onBind = reader.readInt32(ptr)
 		ptr += 4
 
 		return {
 			bytesRead: ptr,
-			result: new ListView(tag, width, height, sectionCounts, renderItem),
+			result: new ListView(
+				tag,
+				width,
+				height,
+				sections,
+				itemHeight,
+				onCreate,
+				onBind,
+			),
 		}
 	}
 
@@ -66,7 +82,7 @@ class ListView extends Widget {
 	}
 
 	public override bytes(): Uint8Array {
-		const writer = new NanoBufWriter(24)
+		const writer = new NanoBufWriter(32)
 		writer.writeTypeId(2164488861)
 
 		if (this.tag) {
@@ -82,19 +98,25 @@ class ListView extends Widget {
 		writer.appendDouble(this.height)
 		writer.writeFieldSize(2, 8)
 
-		writer.writeFieldSize(3, this.sectionCounts.length * 4)
-		for (const sectionCounts of this.sectionCounts) {
-			writer.appendInt32(sectionCounts)
+		writer.writeFieldSize(3, this.sections.length * 4)
+		for (const sections of this.sections) {
+			writer.appendInt32(sections)
 		}
 
-		writer.appendInt32(this.renderItem)
-		writer.writeFieldSize(4, 4)
+		writer.appendDouble(this.itemHeight)
+		writer.writeFieldSize(4, 8)
+
+		writer.appendInt32(this.onCreate)
+		writer.writeFieldSize(5, 4)
+
+		writer.appendInt32(this.onBind)
+		writer.writeFieldSize(6, 4)
 
 		return writer.bytes
 	}
 
 	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(24 + 4, true)
+		const writer = new NanoBufWriter(32 + 4, true)
 		writer.writeTypeId(2164488861)
 
 		if (this.tag) {
@@ -110,13 +132,19 @@ class ListView extends Widget {
 		writer.appendDouble(this.height)
 		writer.writeFieldSize(2, 8)
 
-		writer.writeFieldSize(3, this.sectionCounts.length * 4)
-		for (const sectionCounts of this.sectionCounts) {
-			writer.appendInt32(sectionCounts)
+		writer.writeFieldSize(3, this.sections.length * 4)
+		for (const sections of this.sections) {
+			writer.appendInt32(sections)
 		}
 
-		writer.appendInt32(this.renderItem)
-		writer.writeFieldSize(4, 4)
+		writer.appendDouble(this.itemHeight)
+		writer.writeFieldSize(4, 8)
+
+		writer.appendInt32(this.onCreate)
+		writer.writeFieldSize(5, 4)
+
+		writer.appendInt32(this.onBind)
+		writer.writeFieldSize(6, 4)
 
 		writer.writeLengthPrefix(writer.currentSize - 4)
 

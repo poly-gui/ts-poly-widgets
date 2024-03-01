@@ -1,33 +1,34 @@
-import { Widget } from "../widget/widget.np.js"
-import { Column } from "./column.np.js"
+import { PolyWidget, Widget } from "../widget/widget.js"
+import { Column as NpColumn } from "./column.np.js"
 import { Alignment, type TAlignment } from "../alignment/alignment.np.js"
+import { ApplicationContext } from "poly/application"
 import { MIN_CONTENT } from "../layout.js"
 
-interface ColumnProps {
-	width?: number
-	height?: number
-	horizontalAlignment?: TAlignment
-	verticalAlignment?: TAlignment
+class Column extends PolyWidget {
+	public width: number = MIN_CONTENT
+	public height: number = MIN_CONTENT
+	public horizontalAlignment: TAlignment = Alignment.START
+	public verticalAlignment: TAlignment = Alignment.CENTER
+	private children: PolyWidget[] = []
+
+	constructor(context: ApplicationContext) {
+		super(context)
+	}
+
+	public addChildren(...children: PolyWidget[]): void {
+		this.children.push(...children)
+	}
+
+	public descriptor(): Widget {
+		return new NpColumn(
+			this.tag,
+			this.width,
+			this.height,
+			this.horizontalAlignment,
+			this.verticalAlignment,
+			this.children.map((widget) => widget.descriptor()),
+		)
+	}
 }
 
-function column(
-	children: Widget[],
-	{
-		width = MIN_CONTENT,
-		height = MIN_CONTENT,
-		horizontalAlignment = Alignment.START,
-		verticalAlignment = Alignment.CENTER,
-	}: ColumnProps,
-) {
-	return new Column(
-		null,
-		width,
-		height,
-		horizontalAlignment,
-		verticalAlignment,
-		children,
-	)
-}
-
-export { column }
-export type { ColumnProps }
+export { Column }
