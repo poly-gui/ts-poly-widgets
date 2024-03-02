@@ -1,0 +1,2 @@
+ListViewDeleteOperation::ListViewOperation:
+  deleteAt: int32[]

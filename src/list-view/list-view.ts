@@ -8,6 +8,10 @@ import { MIN_CONTENT } from "../layout.js"
 import { NanoBufReader } from "nanopack"
 import { UpdateWidgets } from "../update-widgets.np.js"
 import { UpdateWidget } from "../update-widget.np.js"
+import { ListViewOperation } from "./list-view-operation.np.js"
+import { ListViewInsertOperation } from "./list-view-insert-operation.np.js"
+import { ListViewBatchOperations } from "./list-view-batch-operations.np.js"
+import { ListViewDeleteOperation } from "./list-view-delete-operation.np.js"
 
 type ListViewCreateItemCallback<TItem extends ListViewItem> = ({
 	sectionIndex,
@@ -36,6 +40,8 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 	public onBind: ListViewBindItemCallback<TItem> | null = null
 
 	private items = new Map<number, TItem>()
+	private pendingOperations: ListViewOperation[] = []
+
 	private readonly onCreateHandle: number
 	private readonly onBindHandle: number
 
@@ -50,7 +56,7 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 		)
 	}
 
-	descriptor(): Widget {
+	public override descriptor(): Widget {
 		return new ListViewMsg(
 			this.tag,
 			this.width,
@@ -60,6 +66,37 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 			this.onCreateHandle,
 			this.onBindHandle,
 		)
+	}
+
+	protected override dispatchUpdate() {
+		const batchOperations = new ListViewBatchOperations(this.pendingOperations)
+		const msg = new UpdateWidget(
+			this.tag,
+			this.descriptor(),
+			new NanoBufReader(batchOperations.bytes()),
+		)
+		this.context.messageChannel.sendMessage(msg)
+		this.pendingOperations = []
+	}
+
+	public appendItem() {
+		this.itemCount += 1
+		const insertOperation = new ListViewInsertOperation(this.tag, [
+			this.itemCount - 1,
+		])
+		this.pendingOperations.push(insertOperation)
+	}
+
+	public insertItems(...indices: number[]) {
+		this.itemCount += indices.length
+		const insertOperation = new ListViewInsertOperation(this.tag, indices)
+		this.pendingOperations.push(insertOperation)
+	}
+
+	public deleteItems(...indices: number[]) {
+		this.itemCount -= indices.length
+		const removeOperation = new ListViewDeleteOperation(this.tag, indices)
+		this.pendingOperations.push(removeOperation)
 	}
 
 	private onRequestCreate(argReader: NanoBufReader) {
@@ -90,7 +127,7 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 		return new UpdateWidgets(
 			updates.map(
 				(updatedWidget) =>
-					new UpdateWidget(updatedWidget.tag, updatedWidget.descriptor()),
+					new UpdateWidget(updatedWidget.tag, updatedWidget.descriptor(), null),
 			),
 		)
 	}

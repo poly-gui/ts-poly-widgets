@@ -32,9 +32,10 @@ class TextField extends PolyWidget {
 	}
 
 	private onValueChangedEvent(argReader: NanoBufReader) {
-		const event = OnValueChanged.fromReader(argReader)
-		if (event) {
-			this.onValueChanged?.(event.result)
+		const parsed = OnValueChanged.fromReader(argReader)
+		if (parsed) {
+			this.value = parsed.result.newValue
+			this.onValueChanged?.(parsed.result)
 		}
 	}
 }

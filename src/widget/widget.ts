@@ -26,7 +26,7 @@ abstract class PolyWidget {
 	}
 
 	protected dispatchUpdate() {
-		const msg = new UpdateWidget(this.tag, this.descriptor())
+		const msg = new UpdateWidget(this.tag, this.descriptor(), null)
 		this.context.messageChannel.sendMessage(msg)
 	}
 }

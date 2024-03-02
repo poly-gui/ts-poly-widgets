@@ -10,6 +10,7 @@ class UpdateWidget implements NanoPackMessage {
 	constructor(
 		public tag: number,
 		public widget: Widget,
+		public args: NanoBufReader | null,
 	) {}
 
 	public static fromBytes(
@@ -22,7 +23,7 @@ class UpdateWidget implements NanoPackMessage {
 	public static fromReader(
 		reader: NanoBufReader,
 	): { bytesRead: number; result: UpdateWidget } | null {
-		let ptr = 12
+		let ptr = 16
 
 		const tag = reader.readInt32(ptr)
 		ptr += 4
@@ -34,7 +35,16 @@ class UpdateWidget implements NanoPackMessage {
 		const widget = maybeWidget.result
 		ptr += maybeWidget.bytesRead
 
-		return { bytesRead: ptr, result: new UpdateWidget(tag, widget) }
+		let args: NanoBufReader | null
+		if (reader.readFieldSize(2) >= 0) {
+			const argsByteLength = reader.readFieldSize(2)
+			args = reader.newReaderAt(ptr, ptr + argsByteLength)
+			ptr += argsByteLength
+		} else {
+			args = null
+		}
+
+		return { bytesRead: ptr, result: new UpdateWidget(tag, widget, args) }
 	}
 
 	public get typeId(): number {
@@ -42,7 +52,7 @@ class UpdateWidget implements NanoPackMessage {
 	}
 
 	public bytes(): Uint8Array {
-		const writer = new NanoBufWriter(12)
+		const writer = new NanoBufWriter(16)
 		writer.writeTypeId(1016534798)
 
 		writer.appendInt32(this.tag)
@@ -51,12 +61,19 @@ class UpdateWidget implements NanoPackMessage {
 		const widgetData = this.widget.bytes()
 		writer.appendBytes(widgetData)
 		writer.writeFieldSize(1, widgetData.byteLength)
+
+		if (this.args) {
+			writer.writeFieldSize(2, this.args.bytes.byteLength)
+			writer.appendBytes(this.args.bytes)
+		} else {
+			writer.writeFieldSize(2, -1)
+		}
 
 		return writer.bytes
 	}
 
 	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12 + 4, true)
+		const writer = new NanoBufWriter(16 + 4, true)
 		writer.writeTypeId(1016534798)
 
 		writer.appendInt32(this.tag)
@@ -65,6 +82,13 @@ class UpdateWidget implements NanoPackMessage {
 		const widgetData = this.widget.bytes()
 		writer.appendBytes(widgetData)
 		writer.writeFieldSize(1, widgetData.byteLength)
+
+		if (this.args) {
+			writer.writeFieldSize(2, this.args.bytes.byteLength)
+			writer.appendBytes(this.args.bytes)
+		} else {
+			writer.writeFieldSize(2, -1)
+		}
 
 		writer.writeLengthPrefix(writer.currentSize - 4)
 

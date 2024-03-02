@@ -8,7 +8,7 @@ async function updateWidget(
 	newWidget: Widget,
 	context: ApplicationContext,
 ) {
-	const message = new UpdateWidget(tag, newWidget)
+	const message = new UpdateWidget(tag, newWidget, null)
 	await context.messageChannel.sendMessage(message)
 }
 
@@ -17,7 +17,7 @@ async function updateWidgets(
 	context: ApplicationContext,
 ) {
 	const message = new UpdateWidgets(
-		updates.map((update) => new UpdateWidget(update.tag, update.newWidget)),
+		updates.map((update) => new UpdateWidget(update.tag, update.newWidget, null)),
 	)
 	await context.messageChannel.sendMessage(message)
 }
