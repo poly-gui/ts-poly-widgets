@@ -49,7 +49,7 @@ class ListView extends Widget {
 		const sectionsLength = sectionsByteLength / 4
 		const sections: number[] = new Array(sectionsLength)
 		for (let i = 0; i < sectionsLength; i++) {
-			const iItem = reader.readInt32(ptr)
+			const iItem = reader.readUint32(ptr)
 			ptr += 4
 			sections[i] = iItem
 		}
@@ -100,7 +100,7 @@ class ListView extends Widget {
 
 		writer.writeFieldSize(3, this.sections.length * 4)
 		for (const sections of this.sections) {
-			writer.appendInt32(sections)
+			writer.appendUint32(sections)
 		}
 
 		writer.appendDouble(this.itemHeight)
@@ -134,7 +134,7 @@ class ListView extends Widget {
 
 		writer.writeFieldSize(3, this.sections.length * 4)
 		for (const sections of this.sections) {
-			writer.appendInt32(sections)
+			writer.appendUint32(sections)
 		}
 
 		writer.appendDouble(this.itemHeight)
