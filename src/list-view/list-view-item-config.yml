@@ -1,0 +1,4 @@
+ListViewItemConfig:
+  sectionIndex: uint32?
+  itemIndex: uint32?
+  itemTag: uint32?

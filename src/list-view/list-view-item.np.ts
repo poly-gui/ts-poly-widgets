@@ -24,7 +24,7 @@ class ListViewItem implements NanoPackMessage {
 	): { bytesRead: number; result: ListViewItem } | null {
 		let ptr = 12
 
-		const itemTag = reader.readInt32(ptr)
+		const itemTag = reader.readUint32(ptr)
 		ptr += 4
 
 		const maybeWidget = Widget.fromReader(reader.newReaderAt(ptr))
@@ -45,7 +45,7 @@ class ListViewItem implements NanoPackMessage {
 		const writer = new NanoBufWriter(12)
 		writer.writeTypeId(1100735111)
 
-		writer.appendInt32(this.itemTag)
+		writer.appendUint32(this.itemTag)
 		writer.writeFieldSize(0, 4)
 
 		const widgetData = this.widget.bytes()
@@ -59,7 +59,7 @@ class ListViewItem implements NanoPackMessage {
 		const writer = new NanoBufWriter(12 + 4, true)
 		writer.writeTypeId(1100735111)
 
-		writer.appendInt32(this.itemTag)
+		writer.appendUint32(this.itemTag)
 		writer.writeFieldSize(0, 4)
 
 		const widgetData = this.widget.bytes()

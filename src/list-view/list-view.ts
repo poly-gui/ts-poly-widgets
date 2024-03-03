@@ -1,7 +1,6 @@
 import type { ApplicationContext } from "poly/application"
 
 import { PolyWidget, Widget, WidgetController } from "../widget/widget.js"
-import { RenderItemConfig } from "./render-item-config.np.js"
 import { ListView as ListViewMsg } from "./list-view.np.js"
 import { ListViewItem as ListViewItemMsg } from "./list-view-item.np.js"
 import { MIN_CONTENT } from "../layout.js"
@@ -12,14 +11,9 @@ import { ListViewOperation } from "./list-view-operation.np.js"
 import { ListViewInsertOperation } from "./list-view-insert-operation.np.js"
 import { ListViewBatchOperations } from "./list-view-batch-operations.np.js"
 import { ListViewDeleteOperation } from "./list-view-delete-operation.np.js"
+import { ListViewItemConfig } from "./list-view-item-config.np.js"
 
-type ListViewCreateItemCallback<TItem extends ListViewItem> = ({
-	sectionIndex,
-	itemIndex,
-}: {
-	sectionIndex: number
-	itemIndex: number
-}) => TItem
+type ListViewCreateItemCallback<TItem extends ListViewItem> = () => TItem
 
 type ListViewBindItemCallback<TItem extends ListViewItem> = ({
 	sectionIndex,
@@ -29,7 +23,7 @@ type ListViewBindItemCallback<TItem extends ListViewItem> = ({
 	sectionIndex: number
 	itemIndex: number
 	item: TItem
-}) => [PolyWidget]
+}) => PolyWidget[]
 
 class ListView<TItem extends ListViewItem> extends PolyWidget {
 	public width = MIN_CONTENT
@@ -99,26 +93,30 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 		this.pendingOperations.push(removeOperation)
 	}
 
-	private onRequestCreate(argReader: NanoBufReader) {
-		const parsed = RenderItemConfig.fromReader(argReader)
-		if (!parsed || !this.onCreate || !this.onBind) return
+	private onRequestCreate(argReader: NanoBufReader): ListViewItemMsg | null {
+		const parsed = ListViewItemConfig.fromReader(argReader)
+		if (!parsed || !this.onCreate || !this.onBind) {
+			return null
+		}
 
 		const { sectionIndex, itemIndex } = parsed.result
-		const listViewItem = this.onCreate({ sectionIndex, itemIndex })
+		const listViewItem = this.onCreate()
 		const itemTag = this.context.idRegistry.newId()
 		this.items.set(itemTag, listViewItem)
 
-		this.onBind({ sectionIndex, itemIndex, item: listViewItem })
+		if (sectionIndex !== null && itemIndex !== null) {
+			this.onBind({ sectionIndex, itemIndex, item: listViewItem })
+		}
 
 		return new ListViewItemMsg(itemTag, listViewItem.widget().descriptor())
 	}
 
 	private onRequestBind(argReader: NanoBufReader) {
-		const parsed = RenderItemConfig.fromReader(argReader)
+		const parsed = ListViewItemConfig.fromReader(argReader)
 		if (!parsed || !this.onBind) return
 
 		const { sectionIndex, itemIndex, itemTag } = parsed.result
-		if (!itemTag) return
+		if (!itemTag || !sectionIndex || !itemIndex) return
 
 		const listViewItem = this.items.get(itemTag)
 		if (!listViewItem) return

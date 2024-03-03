@@ -1,4 +1,0 @@
-RenderItemConfig:
-  sectionIndex: int32
-  itemIndex: int32
-  itemTag: int32?
