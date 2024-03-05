@@ -62,14 +62,14 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 		)
 	}
 
-	protected override dispatchUpdate() {
+	protected override async dispatchUpdate() {
 		const batchOperations = new ListViewBatchOperations(this.pendingOperations)
 		const msg = new UpdateWidget(
 			this.tag,
 			this.descriptor(),
 			new NanoBufReader(batchOperations.bytes()),
 		)
-		this.context.messageChannel.sendMessage(msg)
+		await this.context.messageChannel.sendMessage(msg)
 		this.pendingOperations = []
 	}
 
