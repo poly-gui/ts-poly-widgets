@@ -14,20 +14,20 @@ abstract class PolyWidget {
 
 	abstract descriptor(): Widget
 
-	public show({ window }: { window: string }) {
+	public async show({ window }: { window: string }) {
 		const msg = new CreateWidget(this.descriptor(), window)
-		this.context.messageChannel.sendMessage(msg)
+		await this.context.messageChannel.sendMessage(msg)
 	}
 
-	public update(updater: () => void): this {
+	public async update(updater: () => void) {
 		updater()
-		this.dispatchUpdate()
+		await this.dispatchUpdate()
 		return this
 	}
 
-	protected dispatchUpdate() {
+	protected async dispatchUpdate() {
 		const msg = new UpdateWidget(this.tag, this.descriptor(), null)
-		this.context.messageChannel.sendMessage(msg)
+		await this.context.nativeLayer.sendMessage(msg)
 	}
 }
 
