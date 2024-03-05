@@ -8,7 +8,7 @@ function createWidget(
 	context: ApplicationContext,
 ) {
 	const message = new CreateWidget(widget, windowTag)
-	context.messageChannel.sendMessage(message)
+	context.nativeLayer.sendMessage(message)
 }
 
 export { createWidget }

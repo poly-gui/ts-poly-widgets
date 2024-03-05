@@ -9,7 +9,7 @@ async function updateWidget(
 	context: ApplicationContext,
 ) {
 	const message = new UpdateWidget(tag, newWidget, null)
-	await context.messageChannel.sendMessage(message)
+	await context.nativeLayer.sendMessage(message)
 }
 
 async function updateWidgets(
@@ -19,7 +19,7 @@ async function updateWidgets(
 	const message = new UpdateWidgets(
 		updates.map((update) => new UpdateWidget(update.tag, update.newWidget, null)),
 	)
-	await context.messageChannel.sendMessage(message)
+	await context.nativeLayer.sendMessage(message)
 }
 
 export { updateWidget, updateWidgets }

@@ -69,7 +69,7 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 			this.descriptor(),
 			new NanoBufReader(batchOperations.bytes()),
 		)
-		await this.context.messageChannel.sendMessage(msg)
+		await this.context.nativeLayer.sendMessage(msg)
 		this.pendingOperations = []
 	}
 

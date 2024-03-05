@@ -16,7 +16,7 @@ abstract class PolyWidget {
 
 	public async show({ window }: { window: string }) {
 		const msg = new CreateWidget(this.descriptor(), window)
-		await this.context.messageChannel.sendMessage(msg)
+		await this.context.nativeLayer.sendMessage(msg)
 	}
 
 	public async update(updater: () => void) {
