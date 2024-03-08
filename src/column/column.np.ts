@@ -8,6 +8,10 @@ import type { TAlignment } from "../alignment/alignment.np.js"
 class Column extends Widget {
 	public static TYPE_ID = 2415007766
 
+	public override readonly typeId: number = 2415007766
+
+	public override readonly headerSize: number = 28
+
 	constructor(
 		public tag: number | null,
 		public width: number,
@@ -77,79 +81,45 @@ class Column extends Widget {
 		}
 	}
 
-	public override get typeId(): number {
-		return 2415007766
+	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(2415007766, offset)
+
+		if (this.tag) {
+			writer.appendInt32(this.tag)
+			writer.writeFieldSize(0, 4, offset)
+		} else {
+			writer.writeFieldSize(0, -1, offset)
+		}
+
+		writer.appendDouble(this.width)
+		writer.writeFieldSize(1, 8, offset)
+
+		writer.appendDouble(this.height)
+		writer.writeFieldSize(2, 8, offset)
+
+		writer.appendInt8(this.horizontalAlignment)
+		writer.writeFieldSize(3, 1, offset)
+
+		writer.appendInt8(this.verticalAlignment)
+		writer.writeFieldSize(4, 1, offset)
+
+		writer.appendInt32(this.children.length)
+		let childrenByteLength = 4
+		for (const iItem of this.children) {
+			const iItemData = iItem.bytes()
+			writer.appendBytes(iItemData)
+			childrenByteLength += iItemData.byteLength
+		}
+		writer.writeFieldSize(5, childrenByteLength, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(28)
-		writer.writeTypeId(2415007766)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		writer.appendDouble(this.width)
-		writer.writeFieldSize(1, 8)
-
-		writer.appendDouble(this.height)
-		writer.writeFieldSize(2, 8)
-
-		writer.appendInt8(this.horizontalAlignment)
-		writer.writeFieldSize(3, 1)
-
-		writer.appendInt8(this.verticalAlignment)
-		writer.writeFieldSize(4, 1)
-
-		writer.appendInt32(this.children.length)
-		let childrenByteLength = 4
-		for (const iItem of this.children) {
-			const iItemData = iItem.bytes()
-			writer.appendBytes(iItemData)
-			childrenByteLength += iItemData.byteLength
-		}
-		writer.writeFieldSize(5, childrenByteLength)
-
-		return writer.bytes
-	}
-
-	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(28 + 4, true)
-		writer.writeTypeId(2415007766)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		writer.appendDouble(this.width)
-		writer.writeFieldSize(1, 8)
-
-		writer.appendDouble(this.height)
-		writer.writeFieldSize(2, 8)
-
-		writer.appendInt8(this.horizontalAlignment)
-		writer.writeFieldSize(3, 1)
-
-		writer.appendInt8(this.verticalAlignment)
-		writer.writeFieldSize(4, 1)
-
-		writer.appendInt32(this.children.length)
-		let childrenByteLength = 4
-		for (const iItem of this.children) {
-			const iItemData = iItem.bytes()
-			writer.appendBytes(iItemData)
-			childrenByteLength += iItemData.byteLength
-		}
-		writer.writeFieldSize(5, childrenByteLength)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

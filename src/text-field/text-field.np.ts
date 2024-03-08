@@ -7,6 +7,10 @@ import { Widget } from "../widget/widget.np.js"
 class TextField extends Widget {
 	public static TYPE_ID = 841129444
 
+	public override readonly typeId: number = 841129444
+
+	public override readonly headerSize: number = 20
+
 	constructor(
 		public tag: number | null,
 		public placeholder: string | null,
@@ -58,63 +62,37 @@ class TextField extends Widget {
 		}
 	}
 
-	public override get typeId(): number {
-		return 841129444
+	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(841129444, offset)
+
+		if (this.tag) {
+			writer.appendInt32(this.tag)
+			writer.writeFieldSize(0, 4, offset)
+		} else {
+			writer.writeFieldSize(0, -1, offset)
+		}
+
+		if (this.placeholder) {
+			const placeholderByteLength = writer.appendString(this.placeholder)
+			writer.writeFieldSize(1, placeholderByteLength, offset)
+		} else {
+			writer.writeFieldSize(1, -1, offset)
+		}
+
+		const valueByteLength = writer.appendString(this.value)
+		writer.writeFieldSize(2, valueByteLength, offset)
+
+		writer.appendInt32(this.onValueChanged)
+		writer.writeFieldSize(3, 4, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(20)
-		writer.writeTypeId(841129444)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		if (this.placeholder) {
-			const placeholderByteLength = writer.appendString(this.placeholder)
-			writer.writeFieldSize(1, placeholderByteLength)
-		} else {
-			writer.writeFieldSize(1, -1)
-		}
-
-		const valueByteLength = writer.appendString(this.value)
-		writer.writeFieldSize(2, valueByteLength)
-
-		writer.appendInt32(this.onValueChanged)
-		writer.writeFieldSize(3, 4)
-
-		return writer.bytes
-	}
-
-	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(20 + 4, true)
-		writer.writeTypeId(841129444)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		if (this.placeholder) {
-			const placeholderByteLength = writer.appendString(this.placeholder)
-			writer.writeFieldSize(1, placeholderByteLength)
-		} else {
-			writer.writeFieldSize(1, -1)
-		}
-
-		const valueByteLength = writer.appendString(this.value)
-		writer.writeFieldSize(2, valueByteLength)
-
-		writer.appendInt32(this.onValueChanged)
-		writer.writeFieldSize(3, 4)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

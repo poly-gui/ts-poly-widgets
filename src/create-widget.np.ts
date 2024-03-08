@@ -7,6 +7,10 @@ import { Widget } from "./widget/widget.np.js"
 class CreateWidget implements NanoPackMessage {
 	public static TYPE_ID = 2313387354
 
+	public readonly typeId: number = 2313387354
+
+	public readonly headerSize: number = 12
+
 	constructor(
 		public widget: Widget,
 		public windowTag: string,
@@ -38,37 +42,24 @@ class CreateWidget implements NanoPackMessage {
 		return { bytesRead: ptr, result: new CreateWidget(widget, windowTag) }
 	}
 
-	public get typeId(): number {
-		return 2313387354
+	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(2313387354, offset)
+
+		const widgetData = this.widget.bytes()
+		writer.appendBytes(widgetData)
+		writer.writeFieldSize(0, widgetData.byteLength, offset)
+
+		const windowTagByteLength = writer.appendString(this.windowTag)
+		writer.writeFieldSize(1, windowTagByteLength, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(12)
-		writer.writeTypeId(2313387354)
-
-		const widgetData = this.widget.bytes()
-		writer.appendBytes(widgetData)
-		writer.writeFieldSize(0, widgetData.byteLength)
-
-		const windowTagByteLength = writer.appendString(this.windowTag)
-		writer.writeFieldSize(1, windowTagByteLength)
-
-		return writer.bytes
-	}
-
-	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12 + 4, true)
-		writer.writeTypeId(2313387354)
-
-		const widgetData = this.widget.bytes()
-		writer.appendBytes(widgetData)
-		writer.writeFieldSize(0, widgetData.byteLength)
-
-		const windowTagByteLength = writer.appendString(this.windowTag)
-		writer.writeFieldSize(1, windowTagByteLength)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

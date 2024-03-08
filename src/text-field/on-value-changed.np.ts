@@ -5,6 +5,10 @@ import { NanoBufReader, NanoBufWriter, type NanoPackMessage } from "nanopack"
 class OnValueChanged implements NanoPackMessage {
 	public static TYPE_ID = 1768749598
 
+	public readonly typeId: number = 1768749598
+
+	public readonly headerSize: number = 8
+
 	constructor(public newValue: string) {}
 
 	public static fromBytes(
@@ -26,29 +30,20 @@ class OnValueChanged implements NanoPackMessage {
 		return { bytesRead: ptr, result: new OnValueChanged(newValue) }
 	}
 
-	public get typeId(): number {
-		return 1768749598
+	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(1768749598, offset)
+
+		const newValueByteLength = writer.appendString(this.newValue)
+		writer.writeFieldSize(0, newValueByteLength, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(8)
-		writer.writeTypeId(1768749598)
-
-		const newValueByteLength = writer.appendString(this.newValue)
-		writer.writeFieldSize(0, newValueByteLength)
-
-		return writer.bytes
-	}
-
-	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(8 + 4, true)
-		writer.writeTypeId(1768749598)
-
-		const newValueByteLength = writer.appendString(this.newValue)
-		writer.writeFieldSize(0, newValueByteLength)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

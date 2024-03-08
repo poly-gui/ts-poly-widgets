@@ -7,6 +7,10 @@ import { UpdateWidget } from "./update-widget.np.js"
 class UpdateWidgets implements NanoPackMessage {
 	public static TYPE_ID = 624966581
 
+	public readonly typeId: number = 624966581
+
+	public readonly headerSize: number = 8
+
 	constructor(public updates: UpdateWidget[]) {}
 
 	public static fromBytes(
@@ -37,41 +41,26 @@ class UpdateWidgets implements NanoPackMessage {
 		return { bytesRead: ptr, result: new UpdateWidgets(updates) }
 	}
 
-	public get typeId(): number {
-		return 624966581
+	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(624966581, offset)
+
+		writer.appendInt32(this.updates.length)
+		let updatesByteLength = 4
+		for (const iItem of this.updates) {
+			const iItemData = iItem.bytes()
+			writer.appendBytes(iItemData)
+			updatesByteLength += iItemData.byteLength
+		}
+		writer.writeFieldSize(0, updatesByteLength, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(8)
-		writer.writeTypeId(624966581)
-
-		writer.appendInt32(this.updates.length)
-		let updatesByteLength = 4
-		for (const iItem of this.updates) {
-			const iItemData = iItem.bytes()
-			writer.appendBytes(iItemData)
-			updatesByteLength += iItemData.byteLength
-		}
-		writer.writeFieldSize(0, updatesByteLength)
-
-		return writer.bytes
-	}
-
-	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(8 + 4, true)
-		writer.writeTypeId(624966581)
-
-		writer.appendInt32(this.updates.length)
-		let updatesByteLength = 4
-		for (const iItem of this.updates) {
-			const iItemData = iItem.bytes()
-			writer.appendBytes(iItemData)
-			updatesByteLength += iItemData.byteLength
-		}
-		writer.writeFieldSize(0, updatesByteLength)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

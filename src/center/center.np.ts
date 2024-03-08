@@ -7,6 +7,10 @@ import { Widget } from "../widget/widget.np.js"
 class Center extends Widget {
 	public static TYPE_ID = 1855640887
 
+	public override readonly typeId: number = 1855640887
+
+	public override readonly headerSize: number = 12
+
 	constructor(
 		public tag: number | null,
 		public child: Widget,
@@ -44,45 +48,28 @@ class Center extends Widget {
 		return { bytesRead: ptr, result: new Center(tag, child) }
 	}
 
-	public override get typeId(): number {
-		return 1855640887
+	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(1855640887, offset)
+
+		if (this.tag) {
+			writer.appendInt32(this.tag)
+			writer.writeFieldSize(0, 4, offset)
+		} else {
+			writer.writeFieldSize(0, -1, offset)
+		}
+
+		const childData = this.child.bytes()
+		writer.appendBytes(childData)
+		writer.writeFieldSize(1, childData.byteLength, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(12)
-		writer.writeTypeId(1855640887)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		const childData = this.child.bytes()
-		writer.appendBytes(childData)
-		writer.writeFieldSize(1, childData.byteLength)
-
-		return writer.bytes
-	}
-
-	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12 + 4, true)
-		writer.writeTypeId(1855640887)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		const childData = this.child.bytes()
-		writer.appendBytes(childData)
-		writer.writeFieldSize(1, childData.byteLength)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

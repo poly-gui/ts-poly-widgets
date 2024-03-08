@@ -7,6 +7,10 @@ import { ListViewOperation } from "./list-view-operation.np.js"
 class ListViewInsertOperation extends ListViewOperation {
 	public static TYPE_ID = 2077451345
 
+	public override readonly typeId: number = 2077451345
+
+	public override readonly headerSize: number = 12
+
 	constructor(
 		public tag: number,
 		public insertAt: number[],
@@ -44,39 +48,25 @@ class ListViewInsertOperation extends ListViewOperation {
 		}
 	}
 
-	public override get typeId(): number {
-		return 2077451345
+	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(2077451345, offset)
+
+		writer.appendInt32(this.tag)
+		writer.writeFieldSize(0, 4, offset)
+
+		writer.writeFieldSize(1, this.insertAt.length * 4, offset)
+		for (const insertAt of this.insertAt) {
+			writer.appendInt32(insertAt)
+		}
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(12)
-		writer.writeTypeId(2077451345)
-
-		writer.appendInt32(this.tag)
-		writer.writeFieldSize(0, 4)
-
-		writer.writeFieldSize(1, this.insertAt.length * 4)
-		for (const insertAt of this.insertAt) {
-			writer.appendInt32(insertAt)
-		}
-
-		return writer.bytes
-	}
-
-	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12 + 4, true)
-		writer.writeTypeId(2077451345)
-
-		writer.appendInt32(this.tag)
-		writer.writeFieldSize(0, 4)
-
-		writer.writeFieldSize(1, this.insertAt.length * 4)
-		for (const insertAt of this.insertAt) {
-			writer.appendInt32(insertAt)
-		}
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

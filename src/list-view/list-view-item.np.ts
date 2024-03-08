@@ -7,6 +7,10 @@ import { Widget } from "../widget/widget.np.js"
 class ListViewItem implements NanoPackMessage {
 	public static TYPE_ID = 1100735111
 
+	public readonly typeId: number = 1100735111
+
+	public readonly headerSize: number = 12
+
 	constructor(
 		public itemTag: number,
 		public widget: Widget,
@@ -37,37 +41,24 @@ class ListViewItem implements NanoPackMessage {
 		return { bytesRead: ptr, result: new ListViewItem(itemTag, widget) }
 	}
 
-	public get typeId(): number {
-		return 1100735111
+	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(1100735111, offset)
+
+		writer.appendUint32(this.itemTag)
+		writer.writeFieldSize(0, 4, offset)
+
+		const widgetData = this.widget.bytes()
+		writer.appendBytes(widgetData)
+		writer.writeFieldSize(1, widgetData.byteLength, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(12)
-		writer.writeTypeId(1100735111)
-
-		writer.appendUint32(this.itemTag)
-		writer.writeFieldSize(0, 4)
-
-		const widgetData = this.widget.bytes()
-		writer.appendBytes(widgetData)
-		writer.writeFieldSize(1, widgetData.byteLength)
-
-		return writer.bytes
-	}
-
-	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(12 + 4, true)
-		writer.writeTypeId(1100735111)
-
-		writer.appendUint32(this.itemTag)
-		writer.writeFieldSize(0, 4)
-
-		const widgetData = this.widget.bytes()
-		writer.appendBytes(widgetData)
-		writer.writeFieldSize(1, widgetData.byteLength)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

@@ -7,6 +7,10 @@ import { ListViewOperation } from "./list-view-operation.np.js"
 class ListViewBatchOperations implements NanoPackMessage {
 	public static TYPE_ID = 3604546751
 
+	public readonly typeId: number = 3604546751
+
+	public readonly headerSize: number = 8
+
 	constructor(public operations: ListViewOperation[]) {}
 
 	public static fromBytes(
@@ -37,41 +41,26 @@ class ListViewBatchOperations implements NanoPackMessage {
 		return { bytesRead: ptr, result: new ListViewBatchOperations(operations) }
 	}
 
-	public get typeId(): number {
-		return 3604546751
+	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(3604546751, offset)
+
+		writer.appendInt32(this.operations.length)
+		let operationsByteLength = 4
+		for (const iItem of this.operations) {
+			const iItemData = iItem.bytes()
+			writer.appendBytes(iItemData)
+			operationsByteLength += iItemData.byteLength
+		}
+		writer.writeFieldSize(0, operationsByteLength, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(8)
-		writer.writeTypeId(3604546751)
-
-		writer.appendInt32(this.operations.length)
-		let operationsByteLength = 4
-		for (const iItem of this.operations) {
-			const iItemData = iItem.bytes()
-			writer.appendBytes(iItemData)
-			operationsByteLength += iItemData.byteLength
-		}
-		writer.writeFieldSize(0, operationsByteLength)
-
-		return writer.bytes
-	}
-
-	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(8 + 4, true)
-		writer.writeTypeId(3604546751)
-
-		writer.appendInt32(this.operations.length)
-		let operationsByteLength = 4
-		for (const iItem of this.operations) {
-			const iItemData = iItem.bytes()
-			writer.appendBytes(iItemData)
-			operationsByteLength += iItemData.byteLength
-		}
-		writer.writeFieldSize(0, operationsByteLength)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

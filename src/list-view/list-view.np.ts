@@ -7,6 +7,10 @@ import { Widget } from "../widget/widget.np.js"
 class ListView extends Widget {
 	public static TYPE_ID = 2164488861
 
+	public override readonly typeId: number = 2164488861
+
+	public override readonly headerSize: number = 32
+
 	constructor(
 		public tag: number | null,
 		public width: number,
@@ -77,77 +81,44 @@ class ListView extends Widget {
 		}
 	}
 
-	public override get typeId(): number {
-		return 2164488861
+	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(2164488861, offset)
+
+		if (this.tag) {
+			writer.appendInt32(this.tag)
+			writer.writeFieldSize(0, 4, offset)
+		} else {
+			writer.writeFieldSize(0, -1, offset)
+		}
+
+		writer.appendDouble(this.width)
+		writer.writeFieldSize(1, 8, offset)
+
+		writer.appendDouble(this.height)
+		writer.writeFieldSize(2, 8, offset)
+
+		writer.writeFieldSize(3, this.sections.length * 4, offset)
+		for (const sections of this.sections) {
+			writer.appendUint32(sections)
+		}
+
+		writer.appendDouble(this.itemHeight)
+		writer.writeFieldSize(4, 8, offset)
+
+		writer.appendInt32(this.onCreate)
+		writer.writeFieldSize(5, 4, offset)
+
+		writer.appendInt32(this.onBind)
+		writer.writeFieldSize(6, 4, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(32)
-		writer.writeTypeId(2164488861)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		writer.appendDouble(this.width)
-		writer.writeFieldSize(1, 8)
-
-		writer.appendDouble(this.height)
-		writer.writeFieldSize(2, 8)
-
-		writer.writeFieldSize(3, this.sections.length * 4)
-		for (const sections of this.sections) {
-			writer.appendUint32(sections)
-		}
-
-		writer.appendDouble(this.itemHeight)
-		writer.writeFieldSize(4, 8)
-
-		writer.appendInt32(this.onCreate)
-		writer.writeFieldSize(5, 4)
-
-		writer.appendInt32(this.onBind)
-		writer.writeFieldSize(6, 4)
-
-		return writer.bytes
-	}
-
-	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(32 + 4, true)
-		writer.writeTypeId(2164488861)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		writer.appendDouble(this.width)
-		writer.writeFieldSize(1, 8)
-
-		writer.appendDouble(this.height)
-		writer.writeFieldSize(2, 8)
-
-		writer.writeFieldSize(3, this.sections.length * 4)
-		for (const sections of this.sections) {
-			writer.appendUint32(sections)
-		}
-
-		writer.appendDouble(this.itemHeight)
-		writer.writeFieldSize(4, 8)
-
-		writer.appendInt32(this.onCreate)
-		writer.writeFieldSize(5, 4)
-
-		writer.appendInt32(this.onBind)
-		writer.writeFieldSize(6, 4)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

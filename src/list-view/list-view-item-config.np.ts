@@ -5,6 +5,10 @@ import { NanoBufReader, NanoBufWriter, type NanoPackMessage } from "nanopack"
 class ListViewItemConfig implements NanoPackMessage {
 	public static TYPE_ID = 4128951807
 
+	public readonly typeId: number = 4128951807
+
+	public readonly headerSize: number = 16
+
 	constructor(
 		public sectionIndex: number | null,
 		public itemIndex: number | null,
@@ -53,65 +57,38 @@ class ListViewItemConfig implements NanoPackMessage {
 		}
 	}
 
-	public get typeId(): number {
-		return 4128951807
+	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(4128951807, offset)
+
+		if (this.sectionIndex) {
+			writer.appendUint32(this.sectionIndex)
+			writer.writeFieldSize(0, 4, offset)
+		} else {
+			writer.writeFieldSize(0, -1, offset)
+		}
+
+		if (this.itemIndex) {
+			writer.appendUint32(this.itemIndex)
+			writer.writeFieldSize(1, 4, offset)
+		} else {
+			writer.writeFieldSize(1, -1, offset)
+		}
+
+		if (this.itemTag) {
+			writer.appendUint32(this.itemTag)
+			writer.writeFieldSize(2, 4, offset)
+		} else {
+			writer.writeFieldSize(2, -1, offset)
+		}
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public bytes(): Uint8Array {
 		const writer = new NanoBufWriter(16)
-		writer.writeTypeId(4128951807)
-
-		if (this.sectionIndex) {
-			writer.appendUint32(this.sectionIndex)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		if (this.itemIndex) {
-			writer.appendUint32(this.itemIndex)
-			writer.writeFieldSize(1, 4)
-		} else {
-			writer.writeFieldSize(1, -1)
-		}
-
-		if (this.itemTag) {
-			writer.appendUint32(this.itemTag)
-			writer.writeFieldSize(2, 4)
-		} else {
-			writer.writeFieldSize(2, -1)
-		}
-
-		return writer.bytes
-	}
-
-	public bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(16 + 4, true)
-		writer.writeTypeId(4128951807)
-
-		if (this.sectionIndex) {
-			writer.appendUint32(this.sectionIndex)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		if (this.itemIndex) {
-			writer.appendUint32(this.itemIndex)
-			writer.writeFieldSize(1, 4)
-		} else {
-			writer.writeFieldSize(1, -1)
-		}
-
-		if (this.itemTag) {
-			writer.appendUint32(this.itemTag)
-			writer.writeFieldSize(2, 4)
-		} else {
-			writer.writeFieldSize(2, -1)
-		}
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }

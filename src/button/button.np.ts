@@ -7,6 +7,10 @@ import { Widget } from "../widget/widget.np.js"
 class Button extends Widget {
 	public static TYPE_ID = 320412644
 
+	public override readonly typeId: number = 320412644
+
+	public override readonly headerSize: number = 16
+
 	constructor(
 		public tag: number | null,
 		public text: string,
@@ -45,49 +49,30 @@ class Button extends Widget {
 		return { bytesRead: ptr, result: new Button(tag, text, onClick) }
 	}
 
-	public override get typeId(): number {
-		return 320412644
+	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
+		const writerSizeBefore = writer.currentSize
+
+		writer.writeTypeId(320412644, offset)
+
+		if (this.tag) {
+			writer.appendInt32(this.tag)
+			writer.writeFieldSize(0, 4, offset)
+		} else {
+			writer.writeFieldSize(0, -1, offset)
+		}
+
+		const textByteLength = writer.appendString(this.text)
+		writer.writeFieldSize(1, textByteLength, offset)
+
+		writer.appendInt32(this.onClick)
+		writer.writeFieldSize(2, 4, offset)
+
+		return writer.currentSize - writerSizeBefore
 	}
 
 	public override bytes(): Uint8Array {
 		const writer = new NanoBufWriter(16)
-		writer.writeTypeId(320412644)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		const textByteLength = writer.appendString(this.text)
-		writer.writeFieldSize(1, textByteLength)
-
-		writer.appendInt32(this.onClick)
-		writer.writeFieldSize(2, 4)
-
-		return writer.bytes
-	}
-
-	public override bytesWithLengthPrefix(): Uint8Array {
-		const writer = new NanoBufWriter(16 + 4, true)
-		writer.writeTypeId(320412644)
-
-		if (this.tag) {
-			writer.appendInt32(this.tag)
-			writer.writeFieldSize(0, 4)
-		} else {
-			writer.writeFieldSize(0, -1)
-		}
-
-		const textByteLength = writer.appendString(this.text)
-		writer.writeFieldSize(1, textByteLength)
-
-		writer.appendInt32(this.onClick)
-		writer.writeFieldSize(2, 4)
-
-		writer.writeLengthPrefix(writer.currentSize - 4)
-
+		this.writeTo(writer)
 		return writer.bytes
 	}
 }
