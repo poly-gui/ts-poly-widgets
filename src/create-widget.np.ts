@@ -43,18 +43,20 @@ class CreateWidget implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 12
 
 		writer.writeTypeId(2313387354, offset)
 
 		const widgetData = this.widget.bytes()
 		writer.appendBytes(widgetData)
 		writer.writeFieldSize(0, widgetData.byteLength, offset)
+		bytesWritten += widgetData.byteLength
 
 		const windowTagByteLength = writer.appendString(this.windowTag)
 		writer.writeFieldSize(1, windowTagByteLength, offset)
+		bytesWritten += windowTagByteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

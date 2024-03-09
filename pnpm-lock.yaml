@@ -10,17 +10,17 @@ dependencies:
     version: github.com/poly-gui/ts-nanopack/3658e5c286423bf1318087350146d562f9082b4d(typescript@5.4.2)
   poly:
     specifier: github:poly-gui/ts-poly#main
-    version: github.com/poly-gui/ts-poly/dfc2380d22b34c374e076109a943c81f0686e791(typescript@5.4.2)
+    version: github.com/poly-gui/ts-poly/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914(typescript@5.4.2)
 
 devDependencies:
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.17.0
+    specifier: ^6.21.0
     version: 6.21.0(@typescript-eslint/parser@6.21.0)(eslint@8.57.0)(typescript@5.4.2)
   '@typescript-eslint/parser':
-    specifier: ^6.17.0
+    specifier: ^6.21.0
     version: 6.21.0(eslint@8.57.0)(typescript@5.4.2)
   eslint:
-    specifier: ^8.56.0
+    specifier: ^8.57.0
     version: 8.57.0
   eslint-config-prettier:
     specifier: ^9.1.0
@@ -29,13 +29,13 @@ devDependencies:
     specifier: ^1.1.0
     version: 1.1.0
   eslint-plugin-prettier:
-    specifier: ^5.1.2
+    specifier: ^5.1.3
     version: 5.1.3(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.2.5)
   prettier:
-    specifier: ^3.1.1
+    specifier: ^3.2.5
     version: 3.2.5
   typescript:
-    specifier: ^5.3.3
+    specifier: ^5.4.2
     version: 5.4.2
 
 packages:
@@ -1044,7 +1044,6 @@ packages:
     id: github.com/poly-gui/ts-nanopack/3658e5c286423bf1318087350146d562f9082b4d
     name: nanopack
     version: 0.0.0
-    prepare: true
     requiresBuild: true
     peerDependencies:
       typescript: ^5.0.0
@@ -1052,12 +1051,11 @@ packages:
       typescript: 5.4.2
     dev: false
 
-  github.com/poly-gui/ts-poly/dfc2380d22b34c374e076109a943c81f0686e791(typescript@5.4.2):
-    resolution: {tarball: https://codeload.github.com/poly-gui/ts-poly/tar.gz/dfc2380d22b34c374e076109a943c81f0686e791}
-    id: github.com/poly-gui/ts-poly/dfc2380d22b34c374e076109a943c81f0686e791
+  github.com/poly-gui/ts-poly/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914(typescript@5.4.2):
+    resolution: {tarball: https://codeload.github.com/poly-gui/ts-poly/tar.gz/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914}
+    id: github.com/poly-gui/ts-poly/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914
     name: poly
     version: 0.0.0
-    prepare: true
     requiresBuild: true
     peerDependencies:
       typescript: ^5.0.0

@@ -63,13 +63,14 @@ class TextField extends Widget {
 	}
 
 	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 20
 
 		writer.writeTypeId(841129444, offset)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)
 			writer.writeFieldSize(0, 4, offset)
+			bytesWritten += 4
 		} else {
 			writer.writeFieldSize(0, -1, offset)
 		}
@@ -77,17 +78,20 @@ class TextField extends Widget {
 		if (this.placeholder) {
 			const placeholderByteLength = writer.appendString(this.placeholder)
 			writer.writeFieldSize(1, placeholderByteLength, offset)
+			bytesWritten += placeholderByteLength
 		} else {
 			writer.writeFieldSize(1, -1, offset)
 		}
 
 		const valueByteLength = writer.appendString(this.value)
 		writer.writeFieldSize(2, valueByteLength, offset)
+		bytesWritten += valueByteLength
 
 		writer.appendInt32(this.onValueChanged)
 		writer.writeFieldSize(3, 4, offset)
+		bytesWritten += 4
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public override bytes(): Uint8Array {

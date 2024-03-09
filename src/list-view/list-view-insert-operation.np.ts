@@ -49,19 +49,22 @@ class ListViewInsertOperation extends ListViewOperation {
 	}
 
 	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 12
 
 		writer.writeTypeId(2077451345, offset)
 
 		writer.appendInt32(this.tag)
 		writer.writeFieldSize(0, 4, offset)
+		bytesWritten += 4
 
-		writer.writeFieldSize(1, this.insertAt.length * 4, offset)
+		const insertAtByteLength = this.insertAt.length * 4
+		writer.writeFieldSize(1, insertAtByteLength, offset)
 		for (const insertAt of this.insertAt) {
 			writer.appendInt32(insertAt)
 		}
+		bytesWritten += insertAtByteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public override bytes(): Uint8Array {

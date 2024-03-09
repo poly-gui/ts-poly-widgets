@@ -30,14 +30,15 @@ class ClickEvent implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 8
 
 		writer.writeTypeId(837166865, offset)
 
 		writer.appendInt32(this.timestamp)
 		writer.writeFieldSize(0, 4, offset)
+		bytesWritten += 4
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

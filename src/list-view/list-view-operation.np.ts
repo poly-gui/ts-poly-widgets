@@ -30,14 +30,15 @@ class ListViewOperation implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 8
 
 		writer.writeTypeId(3516816492, offset)
 
 		writer.appendInt32(this.tag)
 		writer.writeFieldSize(0, 4, offset)
+		bytesWritten += 4
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

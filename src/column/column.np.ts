@@ -82,28 +82,33 @@ class Column extends Widget {
 	}
 
 	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 28
 
 		writer.writeTypeId(2415007766, offset)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)
 			writer.writeFieldSize(0, 4, offset)
+			bytesWritten += 4
 		} else {
 			writer.writeFieldSize(0, -1, offset)
 		}
 
 		writer.appendDouble(this.width)
 		writer.writeFieldSize(1, 8, offset)
+		bytesWritten += 8
 
 		writer.appendDouble(this.height)
 		writer.writeFieldSize(2, 8, offset)
+		bytesWritten += 8
 
 		writer.appendInt8(this.horizontalAlignment)
 		writer.writeFieldSize(3, 1, offset)
+		bytesWritten += 1
 
 		writer.appendInt8(this.verticalAlignment)
 		writer.writeFieldSize(4, 1, offset)
+		bytesWritten += 1
 
 		writer.appendInt32(this.children.length)
 		let childrenByteLength = 4
@@ -113,8 +118,9 @@ class Column extends Widget {
 			childrenByteLength += iItemData.byteLength
 		}
 		writer.writeFieldSize(5, childrenByteLength, offset)
+		bytesWritten += childrenByteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public override bytes(): Uint8Array {

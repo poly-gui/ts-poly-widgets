@@ -42,7 +42,7 @@ class ListViewBatchOperations implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 8
 
 		writer.writeTypeId(3604546751, offset)
 
@@ -54,8 +54,9 @@ class ListViewBatchOperations implements NanoPackMessage {
 			operationsByteLength += iItemData.byteLength
 		}
 		writer.writeFieldSize(0, operationsByteLength, offset)
+		bytesWritten += operationsByteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

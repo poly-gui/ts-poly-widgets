@@ -42,7 +42,7 @@ class UpdateWidgets implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 8
 
 		writer.writeTypeId(624966581, offset)
 
@@ -54,8 +54,9 @@ class UpdateWidgets implements NanoPackMessage {
 			updatesByteLength += iItemData.byteLength
 		}
 		writer.writeFieldSize(0, updatesByteLength, offset)
+		bytesWritten += updatesByteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

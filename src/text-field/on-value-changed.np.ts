@@ -31,14 +31,15 @@ class OnValueChanged implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 8
 
 		writer.writeTypeId(1768749598, offset)
 
 		const newValueByteLength = writer.appendString(this.newValue)
 		writer.writeFieldSize(0, newValueByteLength, offset)
+		bytesWritten += newValueByteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

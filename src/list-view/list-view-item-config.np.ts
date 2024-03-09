@@ -58,13 +58,14 @@ class ListViewItemConfig implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 16
 
 		writer.writeTypeId(4128951807, offset)
 
 		if (this.sectionIndex) {
 			writer.appendUint32(this.sectionIndex)
 			writer.writeFieldSize(0, 4, offset)
+			bytesWritten += 4
 		} else {
 			writer.writeFieldSize(0, -1, offset)
 		}
@@ -72,6 +73,7 @@ class ListViewItemConfig implements NanoPackMessage {
 		if (this.itemIndex) {
 			writer.appendUint32(this.itemIndex)
 			writer.writeFieldSize(1, 4, offset)
+			bytesWritten += 4
 		} else {
 			writer.writeFieldSize(1, -1, offset)
 		}
@@ -79,11 +81,12 @@ class ListViewItemConfig implements NanoPackMessage {
 		if (this.itemTag) {
 			writer.appendUint32(this.itemTag)
 			writer.writeFieldSize(2, 4, offset)
+			bytesWritten += 4
 		} else {
 			writer.writeFieldSize(2, -1, offset)
 		}
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

@@ -42,18 +42,20 @@ class ListViewItem implements NanoPackMessage {
 	}
 
 	public writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 12
 
 		writer.writeTypeId(1100735111, offset)
 
 		writer.appendUint32(this.itemTag)
 		writer.writeFieldSize(0, 4, offset)
+		bytesWritten += 4
 
 		const widgetData = this.widget.bytes()
 		writer.appendBytes(widgetData)
 		writer.writeFieldSize(1, widgetData.byteLength, offset)
+		bytesWritten += widgetData.byteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public bytes(): Uint8Array {

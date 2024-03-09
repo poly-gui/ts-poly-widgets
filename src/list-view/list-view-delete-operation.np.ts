@@ -49,19 +49,22 @@ class ListViewDeleteOperation extends ListViewOperation {
 	}
 
 	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 12
 
 		writer.writeTypeId(2223513129, offset)
 
 		writer.appendInt32(this.tag)
 		writer.writeFieldSize(0, 4, offset)
+		bytesWritten += 4
 
-		writer.writeFieldSize(1, this.deleteAt.length * 4, offset)
+		const deleteAtByteLength = this.deleteAt.length * 4
+		writer.writeFieldSize(1, deleteAtByteLength, offset)
 		for (const deleteAt of this.deleteAt) {
 			writer.appendInt32(deleteAt)
 		}
+		bytesWritten += deleteAtByteLength
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public override bytes(): Uint8Array {

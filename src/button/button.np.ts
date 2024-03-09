@@ -50,24 +50,27 @@ class Button extends Widget {
 	}
 
 	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 16
 
 		writer.writeTypeId(320412644, offset)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)
 			writer.writeFieldSize(0, 4, offset)
+			bytesWritten += 4
 		} else {
 			writer.writeFieldSize(0, -1, offset)
 		}
 
 		const textByteLength = writer.appendString(this.text)
 		writer.writeFieldSize(1, textByteLength, offset)
+		bytesWritten += textByteLength
 
 		writer.appendInt32(this.onClick)
 		writer.writeFieldSize(2, 4, offset)
+		bytesWritten += 4
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public override bytes(): Uint8Array {

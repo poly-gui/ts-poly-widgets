@@ -82,38 +82,46 @@ class ListView extends Widget {
 	}
 
 	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		const writerSizeBefore = writer.currentSize
+		let bytesWritten = 32
 
 		writer.writeTypeId(2164488861, offset)
 
 		if (this.tag) {
 			writer.appendInt32(this.tag)
 			writer.writeFieldSize(0, 4, offset)
+			bytesWritten += 4
 		} else {
 			writer.writeFieldSize(0, -1, offset)
 		}
 
 		writer.appendDouble(this.width)
 		writer.writeFieldSize(1, 8, offset)
+		bytesWritten += 8
 
 		writer.appendDouble(this.height)
 		writer.writeFieldSize(2, 8, offset)
+		bytesWritten += 8
 
-		writer.writeFieldSize(3, this.sections.length * 4, offset)
+		const sectionsByteLength = this.sections.length * 4
+		writer.writeFieldSize(3, sectionsByteLength, offset)
 		for (const sections of this.sections) {
 			writer.appendUint32(sections)
 		}
+		bytesWritten += sectionsByteLength
 
 		writer.appendDouble(this.itemHeight)
 		writer.writeFieldSize(4, 8, offset)
+		bytesWritten += 8
 
 		writer.appendInt32(this.onCreate)
 		writer.writeFieldSize(5, 4, offset)
+		bytesWritten += 4
 
 		writer.appendInt32(this.onBind)
 		writer.writeFieldSize(6, 4, offset)
+		bytesWritten += 4
 
-		return writer.currentSize - writerSizeBefore
+		return bytesWritten
 	}
 
 	public override bytes(): Uint8Array {
