@@ -116,7 +116,7 @@ class ListView<TItem extends ListViewItem> extends PolyWidget {
 		if (!parsed || !this.onBind) return
 
 		const { sectionIndex, itemIndex, itemTag } = parsed.result
-		if (!itemTag || !sectionIndex || !itemIndex) return
+		if (itemTag === null || sectionIndex === null || itemIndex === null) return
 
 		const listViewItem = this.items.get(itemTag)
 		if (!listViewItem) return
