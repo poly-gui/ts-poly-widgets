@@ -10,7 +10,7 @@ dependencies:
     version: github.com/poly-gui/ts-nanopack/3658e5c286423bf1318087350146d562f9082b4d(typescript@5.4.2)
   poly:
     specifier: github:poly-gui/ts-poly#main
-    version: github.com/poly-gui/ts-poly/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914(typescript@5.4.2)
+    version: github.com/poly-gui/ts-poly/e31751078671c5fbae6fc94306a0972f5d982ba2(typescript@5.4.2)
 
 devDependencies:
   '@typescript-eslint/eslint-plugin':
@@ -1051,9 +1051,9 @@ packages:
       typescript: 5.4.2
     dev: false
 
-  github.com/poly-gui/ts-poly/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914(typescript@5.4.2):
-    resolution: {tarball: https://codeload.github.com/poly-gui/ts-poly/tar.gz/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914}
-    id: github.com/poly-gui/ts-poly/9d7a26a56b7c60bb4d5f6782b28d61ad793ce914
+  github.com/poly-gui/ts-poly/e31751078671c5fbae6fc94306a0972f5d982ba2(typescript@5.4.2):
+    resolution: {tarball: https://codeload.github.com/poly-gui/ts-poly/tar.gz/e31751078671c5fbae6fc94306a0972f5d982ba2}
+    id: github.com/poly-gui/ts-poly/e31751078671c5fbae6fc94306a0972f5d982ba2
     name: poly
     version: 0.0.0
     requiresBuild: true
