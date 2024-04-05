@@ -1,0 +1,8 @@
+FontStyle:
+  # pass an empty string to use os-default family
+  fontFamily: string
+
+  fontWeight: uint32
+
+  # use 0 for default size
+  fontSize: uint32

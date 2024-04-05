@@ -3,17 +3,19 @@
 import { NanoBufReader, NanoBufWriter } from "nanopack"
 
 import { Widget } from "../widget/widget.np.js"
+import { FontStyle } from "../style/font-style.np.js"
 
 class Text extends Widget {
 	public static TYPE_ID = 3495336243
 
 	public override readonly typeId: number = 3495336243
 
-	public override readonly headerSize: number = 12
+	public override readonly headerSize: number = 16
 
 	constructor(
 		public tag: number | null,
 		public content: string,
+		public style: FontStyle,
 	) {
 		super(tag)
 	}
@@ -28,7 +30,7 @@ class Text extends Widget {
 	public static fromReader(
 		reader: NanoBufReader,
 	): { bytesRead: number; result: Text } | null {
-		let ptr = 12
+		let ptr = 16
 
 		let tag: number | null
 		if (reader.readFieldSize(0) >= 0) {
@@ -42,11 +44,18 @@ class Text extends Widget {
 		const content = reader.readString(ptr, contentByteLength)
 		ptr += contentByteLength
 
-		return { bytesRead: ptr, result: new Text(tag, content) }
+		const maybeStyle = FontStyle.fromReader(reader.newReaderAt(ptr))
+		if (!maybeStyle) {
+			return null
+		}
+		const style = maybeStyle.result
+		ptr += maybeStyle.bytesRead
+
+		return { bytesRead: ptr, result: new Text(tag, content, style) }
 	}
 
 	public override writeTo(writer: NanoBufWriter, offset: number = 0): number {
-		let bytesWritten = 12
+		let bytesWritten = 16
 
 		writer.writeTypeId(3495336243, offset)
 
@@ -62,11 +71,16 @@ class Text extends Widget {
 		writer.writeFieldSize(1, contentByteLength, offset)
 		bytesWritten += contentByteLength
 
+		const styleData = this.style.bytes()
+		writer.appendBytes(styleData)
+		writer.writeFieldSize(2, styleData.byteLength, offset)
+		bytesWritten += styleData.byteLength
+
 		return bytesWritten
 	}
 
 	public override bytes(): Uint8Array {
-		const writer = new NanoBufWriter(12)
+		const writer = new NanoBufWriter(16)
 		this.writeTo(writer)
 		return writer.bytes
 	}

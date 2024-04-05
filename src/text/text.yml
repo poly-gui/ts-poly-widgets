@@ -1,2 +1,3 @@
 Text::Widget:
   content: string
+  style: FontStyle
