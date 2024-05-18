@@ -1,6 +1,6 @@
-import type { ApplicationContext } from "poly/application"
+import type { ApplicationContext } from "poly"
 import { UpdateWidget } from "../update-widget.np.js"
-import { Widget } from "./widget.np.js"
+import type { Widget } from "./widget.np.js"
 import { CreateWidget } from "../create-widget.np.js"
 
 type WidgetTag = number

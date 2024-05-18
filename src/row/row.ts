@@ -1,9 +1,8 @@
-import { Widget } from "../widget/widget.np.js"
+import type { Widget } from "../widget/widget.np.js"
 import { Alignment } from "../alignment/alignment.np.js"
 import { Row as NpRow } from "./row.np.js"
 import { MIN_CONTENT } from "../layout.js"
 import { PolyWidget } from "../widget/widget.js"
-import { ApplicationContext } from "poly/application"
 
 class Row extends PolyWidget {
 	public width = MIN_CONTENT
@@ -12,10 +11,6 @@ class Row extends PolyWidget {
 	public verticalAlignment = Alignment.CENTER
 
 	private children: PolyWidget[] = []
-
-	constructor(context: ApplicationContext) {
-		super(context)
-	}
 
 	public addChildren(...children: PolyWidget[]) {
 		this.children.push(...children)

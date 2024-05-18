@@ -1,5 +1,5 @@
 import { Center as NpCenter } from "./center.np.js"
-import type { ApplicationContext } from "poly/application"
+import type { ApplicationContext } from "poly"
 import { PolyWidget } from "../widget/widget.js"
 
 class Center extends PolyWidget {

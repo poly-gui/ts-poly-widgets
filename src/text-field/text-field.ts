@@ -1,5 +1,5 @@
-import type { ApplicationContext } from "poly/application"
-import { NanoBufReader } from "nanopack"
+import type { ApplicationContext } from "poly"
+import type { NanoBufReader } from "nanopack"
 
 import { PolyWidget, type Widget } from "../widget/widget.js"
 import { TextField as NpTextField } from "./text-field.np.js"

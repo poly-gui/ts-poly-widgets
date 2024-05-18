@@ -1,39 +1,36 @@
 {
-  "name": "poly-widgets",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./layout": {
-      "import": "./dist/layout.js",
-      "types": "./dist/layout.d.ts"
-    }
-  },
-  "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "nanoc": "nanoc --language=ts $(find src -name \"*.yml\")",
-    "prepare": "tsc -p tsconfig.build.json"
-  },
-  "keywords": [],
-  "author": "",
-  "dependencies": {
-    "nanopack": "github:poly-gui/ts-nanopack#main"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-only-warn": "^1.1.0",
-    "eslint-plugin-prettier": "^5.1.3",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.2"
-  },
-  "peerDependencies": {
-    "poly": "github:poly-gui/ts-poly#main"
-  }
+	"name": "poly-widgets",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./layout": {
+			"import": "./dist/layout.js",
+			"types": "./dist/layout.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.build.json",
+		"nanoc": "nanoc --language=ts $(find src -name \"*.yml\")",
+		"prepare": "tsc -p tsconfig.build.json"
+	},
+	"keywords": [],
+	"author": "",
+	"dependencies": {
+		"nanopack": "github:poly-gui/ts-nanopack#main"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.7.3",
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
+		"@typescript-eslint/parser": "^6.21.0",
+		"prettier": "^3.2.5",
+		"typescript": "^5.4.2"
+	},
+	"peerDependencies": {
+		"poly": "github:poly-gui/ts-poly#main"
+	}
 }

@@ -1,4 +1,4 @@
-import type { ApplicationContext } from "poly/application"
+import type { ApplicationContext } from "poly"
 
 import { PolyWidget, Widget, WidgetController } from "../widget/widget.js"
 import { ListView as ListViewMsg } from "./list-view.np.js"

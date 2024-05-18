@@ -1,7 +1,7 @@
 import { PolyWidget, Widget } from "../widget/widget.js"
 import { Column as NpColumn } from "./column.np.js"
 import { Alignment, type TAlignment } from "../alignment/alignment.np.js"
-import { ApplicationContext } from "poly/application"
+import type { ApplicationContext } from "poly"
 import { MIN_CONTENT } from "../layout.js"
 
 class Column extends PolyWidget {

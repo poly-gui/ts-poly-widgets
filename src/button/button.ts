@@ -1,4 +1,4 @@
-import type { ApplicationContext } from "poly/application"
+import type { ApplicationContext } from "poly"
 import { ClickEvent } from "./click-event.np.js"
 import { Button as NpButton } from "./button.np.js"
 import { PolyWidget, Widget } from "../widget/widget.js"
